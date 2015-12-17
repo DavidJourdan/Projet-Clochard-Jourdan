@@ -10,9 +10,8 @@ public class Maze implements GraphInterface{
 	private MBox[][] boxes;
 	
 	
-	public Maze(String fileName, int height, int width)
+	public Maze(int height, int width)
 	{
-		this.fileName = fileName;
 		this.height = height;
 		this.width = width;
 	}
@@ -111,6 +110,8 @@ public class Maze implements GraphInterface{
 
 	public final void initFromTextFile(String fileName) throws MazeReadingException
 	{
+		this.fileName = fileName;
+		boxes = new MBox[height][width];
 		FileReader fin;
 		try 
 		{
@@ -118,7 +119,7 @@ public class Maze implements GraphInterface{
 			BufferedReader bin = new BufferedReader(fin);
 			String str = bin.readLine();
 			int x = 0, y = 0;
-			while(x <= height)
+			while(x < height)
 			{
 				if(str.length()!= width)
 				{
@@ -128,25 +129,34 @@ public class Maze implements GraphInterface{
 				char[] ch = str.toCharArray();
 				for(char c : ch)
 				{
-					if (c=='A')
+					switch(c)
 					{
+						case('A'):
+						{
 						ABox a = new ABox(x,y,this);
 						boxes[x][y]=a;
-					}
-					if (c=='E')
-					{
+						break;
+						}
+						case('E'):
+						{
 						EBox e = new EBox(x,y,this);
 						boxes[x][y]=e;
-					}
-					if (c=='D')
-					{
+						break;
+						}
+						case('D'):
+						{
 						DBox d = new DBox(x,y,this);
 						boxes[x][y]=d;
-					}
-					if (c=='W')
-					{
+						break;
+						}
+						case('W'):
+						{
 						WBox w = new WBox(x,y,this);
 						boxes[x][y]=w;
+						break;
+						}
+						default:
+						throw new MazeReadingException(fileName, x, "Character not supported");
 					}
 					y++;
 				}
@@ -175,9 +185,9 @@ public class Maze implements GraphInterface{
 	public final void saveToTextFile(String fileName) throws IOException
 	{
 		try {
-			FileWriter     fin = new FileWriter(fileName,false) ;
-			BufferedWriter bin = new BufferedWriter(fin) ;
-			PrintWriter    pin = new PrintWriter(bin) ;
+			FileWriter     fw = new FileWriter(fileName,false) ;
+			BufferedWriter bw = new BufferedWriter(fw) ;
+			PrintWriter    pw = new PrintWriter(bw) ;
 			for(int i=0; i<height; i++)
 			{
 				String str = new String();
@@ -186,9 +196,9 @@ public class Maze implements GraphInterface{
 					MBox m = boxes[i][j];
 					str.concat(m.getLabel());
 				}
-				pin.println(str);
+				pw.println(str);
 			}
-			pin.close();
+			pw.close();
 		} 
 		catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
