@@ -132,30 +132,23 @@ public class Maze implements GraphInterface{
 					switch(c)
 					{
 						case('A'):
-						{
 						ABox a = new ABox(x,y,this);
 						boxes[x][y]=a;
 						break;
-						}
 						case('E'):
-						{
 						EBox e = new EBox(x,y,this);
 						boxes[x][y]=e;
 						break;
-						}
 						case('D'):
-						{
 						DBox d = new DBox(x,y,this);
 						boxes[x][y]=d;
 						break;
-						}
 						case('W'):
-						{
 						WBox w = new WBox(x,y,this);
 						boxes[x][y]=w;
 						break;
-						}
 						default:
+						bin.close();
 						throw new MazeReadingException(fileName, x, "Character not supported");
 					}
 					y++;
