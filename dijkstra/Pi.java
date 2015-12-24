@@ -1,7 +1,15 @@
 package dijkstra;
 
-/**
- * Created by David on 24/12/2015.
- */
-public class Pi {
+import java.util.Hashtable;
+
+public class Pi implements PiInterface {
+    @Override
+    public void setValue(int value, VertexInterface vertex) {
+
+    }
+
+    @Override
+    public int getValue(VertexInterface vertex) {
+        return 0;
+    }
 }

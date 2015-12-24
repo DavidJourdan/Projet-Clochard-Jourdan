@@ -1,7 +1,12 @@
 package dijkstra;
 
-/**
- * Created by David on 24/12/2015.
- */
-public class ASet {
+import java.util.HashSet;
+
+public class ASet implements ASetInterface {
+    public void add(VertexInterface vertex) {
+
+    }
+    public boolean contains(VertexInterface vertex) {
+        return true;
+    }
 }
