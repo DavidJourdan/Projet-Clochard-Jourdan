@@ -6,13 +6,10 @@ public class DBox extends MBox
 
     public DBox(int x, int y, Maze m) {
         super(x, y, m);
-        // TODO Auto-generated constructor stub
     }
 
 
-    public String getLabel()
-    {
+    public String getLabel() {
         return "D";
-
     }
 }
