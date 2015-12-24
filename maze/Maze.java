@@ -157,11 +157,11 @@ public class Maze implements GraphInterface {
             PrintWriter    pw = new PrintWriter(bw) ;
             for(int i=0; i<height; i++)
             {
-                String str = new String();
+                String str = "";
                 for(int j=0; j<width; j++)
                 {
                     MBox m = boxes[i][j];
-                    str.concat(m.getLabel());
+                    str = str.concat(m.getLabel());
                 }
                 pw.println(str);
             }
