@@ -1,17 +1,18 @@
+package maze;
 
-public class DBox extends MBox 
+public class DBox extends MBox
 {
-	public Maze m;
-	
-	public DBox(int x, int y, Maze m) {
-		super(x, y, m);
-		// TODO Auto-generated constructor stub
-	}
-	
+    public Maze m;
 
-	public String getLabel()
-	{		
-		return "D";
-		
-	}
+    public DBox(int x, int y, Maze m) {
+        super(x, y, m);
+        // TODO Auto-generated constructor stub
+    }
+
+
+    public String getLabel()
+    {
+        return "D";
+
+    }
 }
