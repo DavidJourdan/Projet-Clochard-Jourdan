@@ -27,42 +27,39 @@ public class Maze implements GraphInterface {
         }
         return null;
     }
-
-    public ArrayList<VertexInterface> getAllVertices() {
-        if(vertices == null) {
-            try {
-                FileReader fin = new FileReader(fileName);
-                BufferedReader bin = new BufferedReader(fin);
-                String str = bin.readLine();
-                int x = 0, y = 0;
-                while(str != null) {
-                    char[] ch = str.toCharArray();
-                    for(char c : ch) {
-                        switch(c) {
-                            case('A'):
-                                ABox a = new ABox(x,y,this);
-                                vertices.add(a);
-                                break;
-                            case('E'):
-                                EBox e = new EBox(x,y,this);
-                                vertices.add(e);
-                                break;
-                            case('D'):
-                                DBox d = new DBox(x,y,this);
-                                vertices.add(d);
-                                break;
-                        }
-                        y++;
+    public final ArrayList<VertexInterface> getAllVertices() {
+        try {
+            FileReader fin = new FileReader(fileName);
+            BufferedReader bin = new BufferedReader(fin);
+            String str = bin.readLine();
+            int x = 0, y = 0;
+            while(str != null) {
+                char[] ch = str.toCharArray();
+                for(char c : ch) {
+                    switch(c) {
+                        case('A'):
+                            ABox a = new ABox(x,y,this);
+                            vertices.add(a);
+                            break;
+                        case('E'):
+                            EBox e = new EBox(x,y,this);
+                            vertices.add(e);
+                            break;
+                        case('D'):
+                            DBox d = new DBox(x,y,this);
+                            vertices.add(d);
+                            break;
                     }
-                    str = bin.readLine();
-                    x++;
+                    y++;
                 }
-                bin.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                str = bin.readLine();
+                x++;
             }
+            bin.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return vertices;
     }
@@ -99,54 +96,16 @@ public class Maze implements GraphInterface {
     public final void initFromTextFile(String fileName) throws MazeReadingException {
         this.fileName = fileName;
         boxes = new MBox[height][width];
-        FileReader fin;
-        try {
-            fin = new FileReader(fileName);
-            BufferedReader bin = new BufferedReader(fin);
-            String str = bin.readLine();
-            int x = 0, y = 0;
-            while(x < height) {
-                if(str.length()!= width) {
-                    bin.close();
-                    throw new MazeReadingException(fileName, x,"Invalid line length");
-                }
-                char[] ch = str.toCharArray();
-                for(char c : ch) {
-                    switch(c) {
-                        case('A'):
-                            ABox a = new ABox(x,y,this);
-                            boxes[x][y]=a;
-                            break;
-                        case('E'):
-                            EBox e = new EBox(x,y,this);
-                            boxes[x][y]=e;
-                            break;
-                        case('D'):
-                            DBox d = new DBox(x,y,this);
-                            boxes[x][y]=d;
-                            break;
-                        case('W'):
-                            WBox w = new WBox(x,y,this);
-                            boxes[x][y]=w;
-                            break;
-                        default:
-                            bin.close();
-                            throw new MazeReadingException(fileName, x, "Character not supported");
-                    }
-                    y++;
-                }
-                str = bin.readLine();
-                x++;
+        for(int i = 0; i<height; i++) {
+            for(int j = 0; j<width; j++){
+                boxes[i][j] = new WBox(i,j,this);
             }
-            if(str != null) {
-                bin.close();
-                throw new MazeReadingException(fileName, x, "Invalid number of lines");
-            }
-            bin.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        ArrayList<VertexInterface> vertices = getAllVertices();
+        for(VertexInterface v : vertices) {
+            int x = v.getX();
+            int y = v.getY();
+            boxes[x][y] = (MBox) v;
         }
     }
 
