@@ -2,7 +2,9 @@ package maze;
 
 public class ABox extends MBox
 {
-    public Maze m;
+    private int x;
+    private int y;
+    private Maze m;
 
     public ABox(int x, int y, Maze m) {
         super(x, y, m);
