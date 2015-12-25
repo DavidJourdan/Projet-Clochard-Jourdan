@@ -1,14 +1,15 @@
 package maze;
 
-public class MBox implements dijkstra.VertexInterface{
+// Classe abstraite
+// Chaque case est définie par une ligne (x) et une colonne (y)
+
+public abstract class MBox implements dijkstra.VertexInterface{
     private int x;
     private int y;
-    private Maze m;
 
-    public MBox(int x, int y, Maze m) {
+    public MBox(int x, int y) {
         this.x = x;
         this.y = y;
-        this.m = m;
     }
 
     public int getX() {
@@ -17,10 +18,6 @@ public class MBox implements dijkstra.VertexInterface{
 
     public int getY() {
         return y;
-    }
-
-    public Maze getM() {
-        return m;
     }
 
     public String getLabel() {
