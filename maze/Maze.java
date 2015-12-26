@@ -12,14 +12,22 @@ public class Maze implements GraphInterface {
     private ArrayList<VertexInterface> vertices = new ArrayList<VertexInterface>();
     private String fileName;
     private int height, width;
-    private MBox[][] boxes;
+    
+    private final MBox[][] boxes;
 
 
     public Maze(int height, int width) {
         this.height = height;
         this.width = width;
+        boxes = new MBox[height][width];
     }
 
+    // Retourne les informations de la case
+    public final MBox getBox(int x,int y){
+    	return boxes[x][y];
+    }
+    
+    
     public VertexInterface getVertex(int x, int y) {
         for(VertexInterface v : vertices) {
             if(v.getX()==x && v.getY()==y)
@@ -28,91 +36,87 @@ public class Maze implements GraphInterface {
         return null;
     }
 
+    
+    /** On ajoute toutes les cases du labyrinthe
+    à une liste vide */
     public ArrayList<VertexInterface> getAllVertices() {
-        if(vertices == null) {
-            try {
-                FileReader fin = new FileReader(fileName);
-                BufferedReader bin = new BufferedReader(fin);
-                String str = bin.readLine();
-                int x = 0, y = 0;
-                while(str != null) {
-                    char[] ch = str.toCharArray();
-                    for(char c : ch) {
-                        switch(c) {
-                            case('A'):
-                                ABox a = new ABox(x,y,this);
-                                vertices.add(a);
-                                break;
-                            case('E'):
-                                EBox e = new EBox(x,y,this);
-                                vertices.add(e);
-                                break;
-                            case('D'):
-                                DBox d = new DBox(x,y,this);
-                                vertices.add(d);
-                                break;
-                        }
-                        y++;
-                    }
-                    str = bin.readLine();
-                    x++;
-                }
-                bin.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return vertices;
+    	ArrayList<VertexInterface> allVert = new ArrayList<VertexInterface>();
+    	
+    	for (int x=0 ; x<height; x++){
+    		MBox[] line = boxes[x];
+    		for (int y=0; y<width; y++){
+    			allVert.add(line[y]);
+    		}
+    	}
+    	return allVert;
     }
 
-    @Override
+    // Les successeurs sont les cases sur lesquelles on peut se rendre
+    // On ajoute tous les sommets à une liste vide
     public ArrayList<VertexInterface> getSuccessors(VertexInterface vertex) {
-        int x = vertex.getX() - 1;
-        int y = vertex.getY() - 1;
-        ArrayList<VertexInterface> l = new ArrayList<VertexInterface>();
-        while(x < vertex.getX()+1) {
-            while(y < vertex.getY()+1) {
-                VertexInterface v = getVertex(x,y);
-                if(v != null) {
-                    l.add(v);
-                }
-                y++;
-            }
-            y = y -2;
-            x++;
+    	ArrayList<VertexInterface> successors = new ArrayList<VertexInterface>();
+    	
+    	// Chaque sommet doit être une case du labyrinthe
+    	// On fait donc un transtypage
+    	MBox box = (MBox)vertex;
+    	
+    	int x = box.getLine();
+        int y = box.getColumn();
+        
+        // On regarde chaque case voisine
+        
+        // D'abord celui au-dessus
+        if (x>0){ // Ne fonctionne pas si pas de voisin au-dessus...
+        	MBox topbox = boxes[x-1][y];
+        	if (topbox.cangothere())
+        		successors.add(topbox);
         }
-        l.remove(vertex);
-        return l;
+        // Puis celui en-dessous
+        if (x<height-1){
+        	MBox underbox = boxes[x+1][y];
+        	if (underbox.cangothere())
+        		successors.add(underbox);
+        }
+        
+        // Celui à gauche
+        if (y>0){
+        	MBox leftbox = boxes[x][y-1];
+        	if (leftbox.cangothere())
+        		successors.add(leftbox);
+        }
+        
+        // Et enfin, le voisin de droite
+        if (y<width-1){
+        	MBox rightbox = boxes[x][y+1];
+        	if (rightbox.cangothere())
+        		successors.add(rightbox);
+        }
+        return successors;
     }
 
-    @Override
+    // Le poids de chaque arc vaut 1
     public int getWeight(VertexInterface src, VertexInterface dst) {
-        ArrayList<VertexInterface> l = getSuccessors(src);
-        if(l.contains(dst))
             return 1;
-        else
-            return 0;
     }
 
     public final void initFromTextFile(String fileName) throws MazeReadingException {
-        this.fileName = fileName;
-        boxes = new MBox[height][width];
-        FileReader fin;
+        FileReader fin = null;
+        BufferedReader bin = null;
         try {
             fin = new FileReader(fileName);
-            BufferedReader bin = new BufferedReader(fin);
+            bin = new BufferedReader(fin);
+            
             String str = bin.readLine();
             int x = 0, y = 0;
             while(x < height) {
+            	// Si la longueur du texte n'est pas de la même taille que le texte, il y a une erreur.
                 if(str.length()!= width) {
-                    bin.close();
                     throw new MazeReadingException(fileName, x,"Invalid line length");
                 }
                 char[] ch = str.toCharArray();
                 for(char c : ch) {
                     switch(c) {
+                    	// Lorsque la lettre rencontrée est A, E, D ou W, on la met dans la case
                         case('A'):
                             ABox a = new ABox(x,y,this);
                             boxes[x][y]=a;
@@ -127,10 +131,10 @@ public class Maze implements GraphInterface {
                             break;
                         case('W'):
                             WBox w = new WBox(x,y,this);
-                            boxes[x][y]=w;
+                            boxes[x][y] = w;
                             break;
+                        // Si la lettre n'est ni E, ni A, ni D, ni W, alors il y a une erreur dans le texte.
                         default:
-                            bin.close();
                             throw new MazeReadingException(fileName, x, "Character not supported");
                     }
                     y++;
@@ -143,10 +147,23 @@ public class Maze implements GraphInterface {
                 throw new MazeReadingException(fileName, x, "Invalid number of lines");
             }
             bin.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        
+        } catch (FileNotFoundException e) { //Fichier non trouvé
+        	System.err.println("Error 404: File not Found");
+            e.printStackTrace(System.err); // Erreur inconnue
         } catch (IOException e) {
-            e.printStackTrace();
+        	System.err.println("Error: read error");
+            e.printStackTrace(System.err);
+        } catch (Exception e) {
+        	System.err.println("Error: unknown error");
+            e.printStackTrace(System.err);
+        } finally {
+        	if (fin!= null)
+				try { fin.close(); } catch (Exception e) {}
+        	// On ferme FileReader
+        	if (bin!= null)
+				try { bin.close(); } catch (Exception e) {}
+        	// On ferme BufferedReader
         }
     }
 

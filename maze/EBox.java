@@ -7,11 +7,21 @@ public class EBox extends MBox
     private int y;
 
     public EBox(int x, int y, Maze m) {
-        super(x, y, m);
+        super(m, y, x);
     }
 
     public String getLabel() {
         return "E";
     }
+
+	public int getX() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getY() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
 
