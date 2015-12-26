@@ -1,5 +1,7 @@
 package maze;
 
+import java.io.PrintWriter;
+
 public class WBox extends MBox
 {
 
@@ -12,17 +14,15 @@ public class WBox extends MBox
     	return false;
     }
     
-    public String getLabel() {
-        return "W";
+    public final void writeTo(PrintWriter pw) {
+        pw.print('W');
     }
 
 	public int getX() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	public int getY() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

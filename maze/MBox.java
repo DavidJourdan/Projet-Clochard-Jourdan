@@ -1,5 +1,7 @@
 package maze;
 
+import java.io.PrintWriter;
+
 // Classe abstraite
 // Chaque case est définie par une ligne (x) et une colonne (y)
 
@@ -31,4 +33,5 @@ public abstract class MBox implements dijkstra.VertexInterface{
     	return y;
     }
 
+    public abstract void writeTo(PrintWriter pw);
 }

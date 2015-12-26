@@ -1,22 +1,22 @@
 package maze;
 
+import java.io.PrintWriter;
+
 public class ABox extends MBox
 {
     public ABox(int x, int y, Maze m) {
         super(m, y, x);
     }
 
-    public String getLabel() {
-        return "A";
+    public final void writeTo(PrintWriter pw) {
+        pw.print('A');
     }
 
 	public int getX() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	public int getY() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

@@ -41,7 +41,6 @@ public class Maze implements GraphInterface {
     à une liste vide */
     public ArrayList<VertexInterface> getAllVertices() {
     	ArrayList<VertexInterface> allVert = new ArrayList<VertexInterface>();
-    	
     	for (int x=0 ; x<height; x++){
     		MBox[] line = boxes[x];
     		for (int y=0; y<width; y++){
@@ -110,52 +109,43 @@ public class Maze implements GraphInterface {
             int x = 0, y = 0;
             while(x < height) {
             	// Si la longueur du texte n'est pas de la même taille que le texte, il y a une erreur.
-                if(str.length()!= width) {
-                    throw new MazeReadingException(fileName, x,"Invalid line length");
-                }
-                char[] ch = str.toCharArray();
-                for(char c : ch) {
-                    switch(c) {
-                    	// Lorsque la lettre rencontrée est A, E, D ou W, on la met dans la case
-                        case('A'):
-                            ABox a = new ABox(x,y,this);
-                            boxes[x][y]=a;
-                            break;
-                        case('E'):
-                            EBox e = new EBox(x,y,this);
-                            boxes[x][y]=e;
-                            break;
-                        case('D'):
-                            DBox d = new DBox(x,y,this);
-                            boxes[x][y]=d;
-                            break;
-                        case('W'):
-                            WBox w = new WBox(x,y,this);
-                            boxes[x][y] = w;
-                            break;
-                        // Si la lettre n'est ni E, ni A, ni D, ni W, alors il y a une erreur dans le texte.
-                        default:
-                            throw new MazeReadingException(fileName, x, "Character not supported");
-                    }
+                if(str.length()!= width)
+                    throw new MazeReadingException(fileName, x,"Invalid column length");
+                while (y<width) {
+                        switch(str.charAt(y)) {
+                        	// Lorsque la lettre rencontrée est A, E, D ou W, on la met dans la case
+                            case('A'):
+                            	boxes[x][y] = new ABox(x,y,this);
+                                break;
+                            case('W'):
+                            	boxes[x][y] = new WBox(x,y,this);
+                                break;
+                            case('E'):
+                            	boxes[x][y] = new EBox(x,y,this);
+                                break;
+                            case('D'):
+                            	boxes[x][y] = new DBox(x,y,this);
+                                break;
+                            // Si la lettre n'est ni E, ni A, ni D, ni W, alors il y a une erreur dans le texte.
+                            default:
+                                throw new MazeReadingException(fileName, x, "Character not supported");
+                        }
+
                     y++;
                 }
-                str = bin.readLine();
                 x++;
             }
-            if(str != null) {
-                bin.close();
+            if(str == null) {
                 throw new MazeReadingException(fileName, x, "Invalid number of lines");
-            }
-            bin.close();
-        
+            }       
         } catch (FileNotFoundException e) { //Fichier non trouvé
         	System.err.println("Error 404: File not Found");
-            e.printStackTrace(System.err); // Erreur inconnue
-        } catch (IOException e) {
+            e.printStackTrace(System.err);
+        } catch (IOException e) { // Erreur de lecture
         	System.err.println("Error: read error");
             e.printStackTrace(System.err);
-        } catch (Exception e) {
-        	System.err.println("Error: unknown error");
+        } catch (Exception e) { // Erreur inconnue
+        	System.err.println("Error: unknown error"); 
             e.printStackTrace(System.err);
         } finally {
         	if (fin!= null)
@@ -167,24 +157,28 @@ public class Maze implements GraphInterface {
         }
     }
 
-    public final void saveToTextFile(String fileName) throws IOException {
-        try {
-            FileWriter     fw = new FileWriter(fileName, false) ;
-            BufferedWriter bw = new BufferedWriter(fw) ;
-            PrintWriter    pw = new PrintWriter(bw) ;
-            for(int i=0; i<height; i++)
+    public final void saveToTextFile(String fileName) throws FileNotFoundException {
+    	PrintWriter pw = null;
+    	try {
+            pw = new PrintWriter(fileName) ;
+            // On regarde chaque case et on récupère le caractère correspondant pour écrire dans le fichier
+            for(int i=0; i<height; i++) // Lignes
             {
-                String str = "";
-                for(int j=0; j<width; j++)
-                {
-                    MBox m = boxes[i][j];
-                    str = str.concat(m.getLabel());
-                }
-                pw.println(str);
+            	MBox[] line = boxes[i];
+                for(int j=0; j<width; j++){ // Colonnes
+                    line[j].writeTo(pw);} // Chaque case dans le fichier
+                pw.println(); // On change de ligne quand on a fini d'en étudier une
             }
-            pw.close();
-        } catch (FileNotFoundException e){
-            e.printStackTrace();
+        } catch (FileNotFoundException e) { // Fichier non trouvé
+        	System.err.println("Error 404: File not Found \"" + fileName + "\""); 
+        } catch (SecurityException e) { // Erreur de sécurité
+        	System.err.println("Security Error \"" + fileName + "\"");
+        } catch (Exception e) { // Erreur inconnue
+        	System.err.println("Unknown Error");
+            e.printStackTrace(System.err);
+        } finally {
+        	if (pw != null)
+				try { pw.close(); } catch (Exception e) {}
         }
     }
 }
