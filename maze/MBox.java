@@ -16,6 +16,8 @@ public abstract class MBox implements dijkstra.VertexInterface{
         this.y = y;
     }
     
+    public abstract void writeTo(PrintWriter pw);
+    
     // On peut aller vers cette case
     public boolean cangothere(){
     	return true;
@@ -32,6 +34,4 @@ public abstract class MBox implements dijkstra.VertexInterface{
     public final int getColumn(){
     	return y;
     }
-
-    public abstract void writeTo(PrintWriter pw);
 }

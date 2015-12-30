@@ -64,7 +64,7 @@ public class Maze implements GraphInterface {
         
         // On regarde chaque case voisine
         
-        // D'abord celui au-dessus
+        // D'abord celui au-dessus 
         if (x>0){ // Ne fonctionne pas si pas de voisin au-dessus...
         	MBox topbox = boxes[x-1][y];
         	if (topbox.cangothere())
@@ -164,9 +164,9 @@ public class Maze implements GraphInterface {
             // On regarde chaque case et on récupère le caractère correspondant pour écrire dans le fichier
             for(int i=0; i<height; i++) // Lignes
             {
-            	MBox[] line = boxes[i];
                 for(int j=0; j<width; j++){ // Colonnes
-                    line[j].writeTo(pw);} // Chaque case dans le fichier
+                	MBox box = boxes[i][j];
+                    box.writeTo(pw);} // Chaque case est mise dans le fichier
                 pw.println(); // On change de ligne quand on a fini d'en étudier une
             }
         } catch (FileNotFoundException e) { // Fichier non trouvé
