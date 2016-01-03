@@ -3,6 +3,13 @@ package dijkstra;
 import java.util.ArrayList;
 
 public class Dijkstra {
+	
+	public static PreviousInterface dijkstra (GraphInterface g, VertexInterface r){
+		ASet a= new ASet();
+		Previous previous=new Previous();
+		Pi pi=new Pi();
+		return dijkstra(a, g , pi, previous, r );
+	}
     private static PreviousInterface dijkstra(ASetInterface a, GraphInterface g, PiInterface pi,
                                               PreviousInterface previous, VertexInterface r) {
     	ArrayList<VertexInterface> allVert = g.getAllVertices() ; // tous les sommets du graphe dans une liste
