@@ -3,13 +3,19 @@ package dijkstra;
 import java.util.Hashtable;
 
 public class Pi implements PiInterface {
-    @Override
+	
+	private final Hashtable <VertexInterface, Integer> pi;
+	
+	public Pi(){
+		pi = new Hashtable<VertexInterface, Integer>() ; 
+	}
+	
     public void setValue(int value, VertexInterface vertex) {
+    	pi.put(vertex, value);
 
     }
 
-    @Override
     public int getValue(VertexInterface vertex) {
-        return 0;
+        return pi.get(vertex);
     }
 }
