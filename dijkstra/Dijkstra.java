@@ -3,50 +3,43 @@ package dijkstra;
 import java.util.ArrayList;
 
 public class Dijkstra {
-	
-	public static PreviousInterface dijkstra (GraphInterface g, VertexInterface r){
-		ASet a= new ASet();
-		Previous previous=new Previous();
-		Pi pi=new Pi();
-		return dijkstra(a, g , pi, previous, r );
-	}
+    public static PreviousInterface dijkstra (GraphInterface g, VertexInterface r) {
+        ASet a= new ASet();
+        Previous previous=new Previous();
+        Pi pi=new Pi();
+        return dijkstra(a, g , pi, previous, r );
+    }
+
     private static PreviousInterface dijkstra(ASetInterface a, GraphInterface g, PiInterface pi,
                                               PreviousInterface previous, VertexInterface r) {
-    	ArrayList<VertexInterface> allVert = g.getAllVertices() ; // tous les sommets du graphe dans une liste
-    	int len=allVert.size(); // Nombre de sommets
-    	a.add(r);
-    	pi.setValue(0,r);
-    	for (VertexInterface x : allVert)
-    		pi.setValue(Integer.MAX_VALUE, x); // L'infini à tous les autres sommmets
-    	VertexInterface piv = r ;
-    	int piPiv = 0;
-    	int j=1;
-    	while (j<len){
-    		ArrayList<VertexInterface> pivsucc=g.getSuccessors(piv);
-    		for (VertexInterface y : pivsucc){
-    			if (! a.contains(y)){
-    				int p=g.getWeight(piv, y);
-    				if (piPiv+p<pi.getValue(y));
-    				pi.setValue(p+pi.getValue(piv), y);
-    				previous.setValue(piv, y);
-    			}
-    		}
-    		/** Définition d'un nouveau pivot */
-    		VertexInterface newPiv=null;
-    		int piNewPiv = Integer.MAX_VALUE;
-    		for (VertexInterface s : allVert)
-    			if (! a.contains(s)){
-    				int piS=pi.getValue(s);
-    				if (piS<piNewPiv){
-    					newPiv = s;
-    					piNewPiv=piS;
-    				}
-    			}
-    		piv=newPiv;
-    		piPiv=piNewPiv;
-    		a.add(piv);
-    		j++;
-    	}
-    	return previous;
+        a.add(r);
+        VertexInterface pivot = r;
+        ArrayList<VertexInterface> allVertices = g.getAllVertices();
+        int pivotValue = 0;
+        int len = allVertices.size();
+        for(VertexInterface v : allVertices) {
+            pi.setValue(v, Integer.MAX_VALUE);
+        }
+        pi.setValue(r, 0);
+        for(int j=1; j<len; j++) {
+            ArrayList<VertexInterface> successors = g.getSuccessors(pivot);
+            for(VertexInterface y : successors) {
+                int weightY = g.getWeight(pivot, y);
+                if(!a.contains(y) && pivotValue + weightY < pi.getValue(y)) {
+                    pi.setValue(y, pivotValue + weightY);
+                    previous.setValue(y, pivot);
+                }
+            }
+            int min = Integer.MAX_VALUE;
+            for (VertexInterface s : allVertices) {
+                if (!a.contains(s) && pi.getValue(s) < min) {
+                    pivot = s;
+                    min = pi.getValue(s);
+                }
+            }
+            pivotValue = min;
+            a.add(pivot);
+        }
+        return previous;
     }
 }
