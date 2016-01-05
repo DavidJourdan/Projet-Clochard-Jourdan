@@ -1,8 +1,8 @@
 package dijkstra;
 
 public interface ASetInterface {
-	// Ajouter un sommet à l'ensemble A
+	// Ajouter un sommet Ã  l'ensemble A
     public void add(VertexInterface vertex);
-    // Tester si un sommet apartient à A
+    // Tester si un sommet apartient Ã  A
     public boolean contains(VertexInterface vertex);
 }

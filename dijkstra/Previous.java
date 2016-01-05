@@ -5,11 +5,11 @@ import java.util.Hashtable;
 
 public class Previous implements PreviousInterface {
    private final Hashtable<VertexInterface,VertexInterface> prev;
-	
+
    public Previous(){
-	   prev = new Hashtable<VertexInterface, VertexInterface>();
+	   prev = new Hashtable<>();
    }
-   
+
 	public void setValue(VertexInterface vertex, VertexInterface value) {
 		prev.put(vertex, value);
     }
@@ -21,9 +21,9 @@ public class Previous implements PreviousInterface {
     /** Liste pour montrer le chemin le plus court
      *la racine et un sommet */
     public ArrayList<VertexInterface> getShortestPathTo(VertexInterface vertex) {
-        ArrayList<VertexInterface> path = new ArrayList<VertexInterface>();
-        while (vertex!=null){ // quand la branche existe 
-        	path.add(vertex); // on l'ajoute à la liste
+        ArrayList<VertexInterface> path = new ArrayList<>();
+        while (vertex!=null){ // quand la branche existe
+        	path.add(vertex); // on l'ajoute ï¿½ la liste
         	vertex=getValue(vertex);
         }
         return path;

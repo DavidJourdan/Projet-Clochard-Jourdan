@@ -3,13 +3,13 @@ package dijkstra;
 import java.util.HashSet;
 
 public class ASet implements ASetInterface {
-	
+
 	private HashSet<VertexInterface> aSet;
-	
+
 	public void Aset() {
-		aSet = new HashSet<VertexInterface>();
+		aSet = new HashSet<>();
 	}
-	
+
     public void add(VertexInterface vertex) {
     	aSet.add(vertex);
 
