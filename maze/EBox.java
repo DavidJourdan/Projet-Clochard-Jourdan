@@ -1,24 +1,15 @@
 package maze;
 
-import java.io.PrintWriter;
+public class EBox extends MBox {
+    private int x;
+    private int y;
 
-public class EBox extends MBox
-{
-    public EBox(int x, int y, Maze m) {
-        super(m, y, x);
+    public EBox(int x, int y) {
+        super(x, y);
     }
 
-    // Dans pw : caractère correspondant
-    public final void writeTo(PrintWriter pw) {
-        pw.print('E');
+    @Override
+    public String getType() {
+        return "E";
     }
-
-	public int getX() {
-		return 0;
-	}
-
-	public int getY() {
-		return 0;
-	}
 }
-

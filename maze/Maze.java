@@ -9,11 +9,9 @@ import java.util.ArrayList;
 
 public class Maze implements GraphInterface {
 
-    private ArrayList<VertexInterface> vertices = new ArrayList<VertexInterface>();
-    private String fileName;
+    private ArrayList<VertexInterface> vertices = new ArrayList<>(); // tableau contenant les cases franchissables
     private int height, width;
-    
-    private final MBox[][] boxes;
+    private MBox[][] boxes;    // tableau contenant toutes les cases du labyrinthe
 
 
     public Maze(int height, int width) {
@@ -23,79 +21,60 @@ public class Maze implements GraphInterface {
     }
 
     // Retourne les informations de la case
-    public final MBox getBox(int x,int y){
-    	return boxes[x][y];
-    }
-    
-    
-    public VertexInterface getVertex(int x, int y) {
-        for(VertexInterface v : vertices) {
-            if(v.getX()==x && v.getY()==y)
-                return v;
-        }
-        return null;
+    // ne renvoie le sommet que s'il est dans vertices
+    public MBox getBox(int x, int y) {
+        if(x>=0 && x<height && y>=0 && y<width)
+            return boxes[x][y];
+        else
+            return null;
     }
 
-    
-    /** On ajoute toutes les cases du labyrinthe
-    à une liste vide */
+
     public ArrayList<VertexInterface> getAllVertices() {
-    	ArrayList<VertexInterface> allVert = new ArrayList<VertexInterface>();
-    	for (int x=0 ; x<height; x++){
-    		MBox[] line = boxes[x];
-    		for (int y=0; y<width; y++){
-    			allVert.add(line[y]);
-    		}
-    	}
-    	return allVert;
+        return vertices;
     }
 
-    // Les successeurs sont les cases sur lesquelles on peut se rendre
-    // On ajoute tous les sommets à une liste vide
+    // cherche dans boxes les cases franchissables autour de vertex
     public ArrayList<VertexInterface> getSuccessors(VertexInterface vertex) {
-    	ArrayList<VertexInterface> successors = new ArrayList<VertexInterface>();
-    	
-    	// Chaque sommet doit être une case du labyrinthe
-    	// On fait donc un transtypage
-    	MBox box = (MBox)vertex;
-    	
-    	int x = box.getLine();
-        int y = box.getColumn();
-        
+        ArrayList<VertexInterface> successors = new ArrayList<>();
+
+        // Chaque sommet doit Ãªtre une case du labyrinthe
+        // On fait donc un transtypage
+        MBox box = (MBox) vertex;
+        int x = box.getX();
+        int y = box.getY();
+
         // On regarde chaque case voisine
-        
-        // D'abord celui au-dessus 
-        if (x>0){ // Ne fonctionne pas si pas de voisin au-dessus...
-        	MBox topbox = boxes[x-1][y];
-        	if (topbox.cangothere())
-        		successors.add(topbox);
-        }
+
+        // D'abord celui au-dessus
+        MBox topBox = getBox(x + 1, y);
+        if(topBox != null && !topBox.getType().equals("W"))
+            successors.add(topBox);
         // Puis celui en-dessous
-        if (x<height-1){
-        	MBox underbox = boxes[x+1][y];
-        	if (underbox.cangothere())
-        		successors.add(underbox);
-        }
-        
-        // Celui à gauche
-        if (y>0){
-        	MBox leftbox = boxes[x][y-1];
-        	if (leftbox.cangothere())
-        		successors.add(leftbox);
-        }
-        
+        MBox bottomBox = getBox(x - 1, y);
+        if(bottomBox != null && !bottomBox.getType().equals("W"))
+            successors.add(bottomBox);
+        // Celui Ã  gauche
+        MBox leftBox = getBox(x, y - 1);
+        if(leftBox != null && !leftBox.getType().equals("W"))
+            successors.add(leftBox);
         // Et enfin, le voisin de droite
-        if (y<width-1){
-        	MBox rightbox = boxes[x][y+1];
-        	if (rightbox.cangothere())
-        		successors.add(rightbox);
-        }
+        MBox rightBox = getBox(x, y + 1);
+        if(rightBox != null && !rightBox.getType().equals("W"))
+            successors.add(rightBox);
+
         return successors;
     }
 
-    // Le poids de chaque arc vaut 1
     public int getWeight(VertexInterface src, VertexInterface dst) {
+        ArrayList<VertexInterface> successors = getSuccessors(src);
+        if(successors.contains(dst))
             return 1;
+        //Deux sommets non reliÃ©s dans le graphe peuvent Ãªtre modÃ©lisÃ©s par une arÃªte de poids infini
+        else {
+            System.out.println("Error : no edge between" + src.getLabel()+" and "+ dst.getLabel());
+            return Integer.MAX_VALUE;
+        }
     }
 
     public final void initFromTextFile(String fileName) throws MazeReadingException {
@@ -104,81 +83,94 @@ public class Maze implements GraphInterface {
         try {
             fin = new FileReader(fileName);
             bin = new BufferedReader(fin);
-            
             String str = bin.readLine();
             int x = 0, y = 0;
             while(x < height) {
-            	// Si la longueur du texte n'est pas de la même taille que le texte, il y a une erreur.
+                // Si la longueur du texte n'est pas de la mÃªme taille que le texte, il y a une erreur.
                 if(str.length()!= width)
                     throw new MazeReadingException(fileName, x,"Invalid column length");
-                while (y<width) {
-                        switch(str.charAt(y)) {
-                        	// Lorsque la lettre rencontrée est A, E, D ou W, on la met dans la case
-                            case('A'):
-                            	boxes[x][y] = new ABox(x,y,this);
-                                break;
-                            case('W'):
-                            	boxes[x][y] = new WBox(x,y,this);
-                                break;
-                            case('E'):
-                            	boxes[x][y] = new EBox(x,y,this);
-                                break;
-                            case('D'):
-                            	boxes[x][y] = new DBox(x,y,this);
-                                break;
-                            // Si la lettre n'est ni E, ni A, ni D, ni W, alors il y a une erreur dans le texte.
-                            default:
-                                throw new MazeReadingException(fileName, x, "Character not supported");
-                        }
-
+                while (y < width) {
+                    switch(str.charAt(y)) {
+                        // Lorsque la lettre rencontrÃ©e est A, E, D ou W, on la met dans la case
+                        // Lorsque la lettre rencontrÃ©e est A, E ou D, on la met dans la liste des cases franchissables
+                        case('A'):
+                            ABox a = new ABox(x,y);
+                            boxes[x][y] = a;
+                            vertices.add(a);
+                            break;
+                        case('W'):
+                            boxes[x][y] = new WBox(x,y);
+                            break;
+                        case('E'):
+                            EBox e = new EBox(x,y);
+                            boxes[x][y] = e;
+                            vertices.add(e);
+                            break;
+                        case('D'):
+                            DBox d = new DBox(x,y);
+                            boxes[x][y] = d;
+                            vertices.add(d);
+                            break;
+                        // Si la lettre n'est ni E, ni A, ni D, ni W, alors il y a une erreur dans le texte.
+                        default:
+                            throw new MazeReadingException(fileName, x, String.format("Character not supported : %s", str.charAt(y)));
+                    }
                     y++;
                 }
                 x++;
             }
-            if(str == null) {
+            if(str == null)
                 throw new MazeReadingException(fileName, x, "Invalid number of lines");
-            }       
-        } catch (FileNotFoundException e) { //Fichier non trouvé
-        	System.err.println("Error 404: File not Found");
+        } catch (FileNotFoundException e) { //Fichier non trouvÃ©
+            System.err.println("Error 404: File not Found");
             e.printStackTrace(System.err);
         } catch (IOException e) { // Erreur de lecture
-        	System.err.println("Error: read error");
+            System.err.println("Error: read error");
             e.printStackTrace(System.err);
         } catch (Exception e) { // Erreur inconnue
-        	System.err.println("Error: unknown error"); 
+            System.err.println("Error: unknown error");
             e.printStackTrace(System.err);
         } finally {
-        	if (fin!= null)
-				try { fin.close(); } catch (Exception e) {}
-        	// On ferme FileReader
-        	if (bin!= null)
-				try { bin.close(); } catch (Exception e) {}
-        	// On ferme BufferedReader
+            if (fin != null)
+                try { fin.close(); } catch (Exception e) {}
+            // On ferme FileReader
+            if (bin != null)
+                try { bin.close(); } catch (Exception e) {}
+            // On ferme BufferedReader
         }
     }
 
-    public final void saveToTextFile(String fileName) throws FileNotFoundException {
-    	PrintWriter pw = null;
-    	try {
-            pw = new PrintWriter(fileName) ;
-            // On regarde chaque case et on récupère le caractère correspondant pour écrire dans le fichier
-            for(int i=0; i<height; i++) // Lignes
-            {
+    public final void saveToTextFile(String fileName) throws IOException {
+        PrintWriter    pw = null;
+        FileWriter     fw = null;
+        BufferedWriter bw = null;
+        try {
+            fw = new FileWriter(fileName, false) ;
+            bw = new BufferedWriter(fw) ;
+            pw = new PrintWriter(bw) ;
+            // On regarde chaque case et on rÃ©cupÃ¨re le caractÃ¨re correspondant pour Ã©crire dans le fichier
+            for(int i=0; i<height; i++) {   // Lignes
+                String str = "";
                 for(int j=0; j<width; j++){ // Colonnes
-                	MBox box = boxes[i][j];
-                    box.writeTo(pw);} // Chaque case est mise dans le fichier
-                pw.println(); // On change de ligne quand on a fini d'en étudier une
+                    MBox box = boxes[i][j];
+                    str = str.concat(box.getType());
+                } // Chaque case est mise dans le fichier
+                pw.println(str); // On change de ligne quand on a fini d'en Ã©tudier une
             }
-        } catch (FileNotFoundException e) { // Fichier non trouvé
-        	System.err.println("Error 404: File not Found \"" + fileName + "\""); 
-        } catch (SecurityException e) { // Erreur de sécurité
-        	System.err.println("Security Error \"" + fileName + "\"");
+        } catch (FileNotFoundException e) { // Fichier non trouvÃ©
+            System.err.println("Error 404: File not Found \"" + fileName + "\"");
+        } catch (SecurityException e) { // Erreur de sÃ©curitÃ©
+            System.err.println("Security Error \"" + fileName + "\"");
         } catch (Exception e) { // Erreur inconnue
-        	System.err.println("Unknown Error");
+            System.err.println("Unknown Error");
             e.printStackTrace(System.err);
         } finally {
-        	if (pw != null)
-				try { pw.close(); } catch (Exception e) {}
+            if (pw != null)
+                try { pw.close(); } catch (Exception e) {}
+            if (fw != null)
+                try { fw.close(); } catch (Exception e) {}
+            if (bw != null)
+                try { bw.close(); } catch (Exception e) {}
         }
     }
 }

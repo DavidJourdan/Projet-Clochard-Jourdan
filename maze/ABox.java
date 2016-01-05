@@ -1,23 +1,16 @@
 package maze;
 
-import java.io.PrintWriter;
-
 public class ABox extends MBox
 {
-    public ABox(int x, int y, Maze m) {
-        super(m, y, x);
+    private int x;
+    private int y;
+
+    public ABox(int x, int y) {
+        super(x, y);
     }
 
-    public final void writeTo(PrintWriter pw) {
-        pw.print('A');
+    @Override
+    public String getType() {
+        return "A";
     }
-
-	public int getX() {
-		return 0;
-	}
-
-	public int getY() {
-		return 0;
-	}
-
 }
