@@ -6,7 +6,7 @@ public class Pi implements PiInterface {
     private final Hashtable <VertexInterface, Integer> pi;
 
     public Pi(){
-        pi = new Hashtable<>() ;
+        pi = new Hashtable<VertexInterface, Integer>() ;
     }
 
     public void setValue(VertexInterface vertex, int value) {

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Maze implements GraphInterface {
 
-    private ArrayList<VertexInterface> vertices = new ArrayList<>(); // tableau contenant les cases franchissables
+    private ArrayList<VertexInterface> vertices = new ArrayList<VertexInterface>(); // tableau contenant les cases franchissables
     private int height, width;
     private MBox[][] boxes;    // tableau contenant toutes les cases du labyrinthe
 
@@ -36,9 +36,9 @@ public class Maze implements GraphInterface {
 
     // cherche dans boxes les cases franchissables autour de vertex
     public ArrayList<VertexInterface> getSuccessors(VertexInterface vertex) {
-        ArrayList<VertexInterface> successors = new ArrayList<>();
+        ArrayList<VertexInterface> successors = new ArrayList<VertexInterface>();
 
-        // Chaque sommet doit être une case du labyrinthe
+        // Chaque sommet doit etre une case du labyrinthe
         // On fait donc un transtypage
         MBox box = (MBox) vertex;
         int x = box.getX();
@@ -70,7 +70,7 @@ public class Maze implements GraphInterface {
         ArrayList<VertexInterface> successors = getSuccessors(src);
         if(successors.contains(dst))
             return 1;
-        //Deux sommets non reliés dans le graphe peuvent être modélisés par une arête de poids infini
+        //Deux sommets non relies dans le graphe peuvent etre modelises par une arete de poids infini
         else {
             System.out.println("Error : no edge between" + src.getLabel()+" and "+ dst.getLabel());
             return Integer.MAX_VALUE;
@@ -86,13 +86,13 @@ public class Maze implements GraphInterface {
             String str = bin.readLine();
             int x = 0, y = 0;
             while(x < height) {
-                // Si la longueur du texte n'est pas de la même taille que le texte, il y a une erreur.
+                // Si la longueur du texte n'est pas de la meme taille que le texte, il y a une erreur.
                 if(str.length()!= width)
                     throw new MazeReadingException(fileName, x,"Invalid column length");
                 while (y < width) {
                     switch(str.charAt(y)) {
-                        // Lorsque la lettre rencontrée est A, E, D ou W, on la met dans la case
-                        // Lorsque la lettre rencontrée est A, E ou D, on la met dans la liste des cases franchissables
+                        // Lorsque la lettre rencontree est A, E, D ou W, on la met dans la case
+                        // Lorsque la lettre rencontree est A, E ou D, on la met dans la liste des cases franchissables
                         case('A'):
                             ABox a = new ABox(x,y);
                             boxes[x][y] = a;
@@ -148,18 +148,18 @@ public class Maze implements GraphInterface {
             fw = new FileWriter(fileName, false) ;
             bw = new BufferedWriter(fw) ;
             pw = new PrintWriter(bw) ;
-            // On regarde chaque case et on récupère le caractère correspondant pour écrire dans le fichier
+            // On regarde chaque case et on recupere le caractere correspondant pour ecrire dans le fichier
             for(int i=0; i<height; i++) {   // Lignes
                 String str = "";
                 for(int j=0; j<width; j++){ // Colonnes
                     MBox box = boxes[i][j];
                     str = str.concat(box.getType());
                 } // Chaque case est mise dans le fichier
-                pw.println(str); // On change de ligne quand on a fini d'en étudier une
+                pw.println(str); // On change de ligne quand on a fini d'en etudier une
             }
-        } catch (FileNotFoundException e) { // Fichier non trouvé
+        } catch (FileNotFoundException e) { // Fichier non trouve
             System.err.println("Error 404: File not Found \"" + fileName + "\"");
-        } catch (SecurityException e) { // Erreur de sécurité
+        } catch (SecurityException e) { // Erreur de securite
             System.err.println("Security Error \"" + fileName + "\"");
         } catch (Exception e) { // Erreur inconnue
             System.err.println("Unknown Error");
