@@ -7,6 +7,5 @@ public class ASet implements ASetInterface {
 
     }
     public boolean contains(VertexInterface vertex) {
-        return true;
     }
 }
