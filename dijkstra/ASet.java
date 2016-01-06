@@ -4,14 +4,14 @@ import java.util.HashSet;
 
 public class ASet implements ASetInterface {
 
-	private HashSet<VertexInterface> aSet;
+    private HashSet<VertexInterface> aSet;
 
-	public void Aset() {
-		aSet = new HashSet<>();
-	}
+    public ASet() {
+        aSet = new HashSet<>();
+    }
 
     public void add(VertexInterface vertex) {
-    	aSet.add(vertex);
+        aSet.add(vertex);
 
     }
     public boolean contains(VertexInterface vertex) {

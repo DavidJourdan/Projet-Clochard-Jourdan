@@ -3,16 +3,14 @@ package dijkstra;
 import java.util.Hashtable;
 
 public class Pi implements PiInterface {
+    private final Hashtable <VertexInterface, Integer> pi;
 
-	private final Hashtable <VertexInterface, Integer> pi;
+    public Pi(){
+        pi = new Hashtable<>() ;
+    }
 
-	public Pi(){
-		pi = new Hashtable<>() ; 
-	}
-
-    public void setValue(int value, VertexInterface vertex) {
-    	pi.put(vertex, value);
-
+    public void setValue(VertexInterface vertex, int value) {
+        pi.put(vertex, value);
     }
 
     public int getValue(VertexInterface vertex) {

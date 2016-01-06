@@ -16,7 +16,7 @@ public class Dijkstra {
         VertexInterface pivot = r;
         ArrayList<VertexInterface> allVertices = g.getAllVertices();
         int pivotValue = 0;
-        int len = allVertices.size();
+        int len = allVertices.size(); // Nombre de sommets
         for(VertexInterface v : allVertices) {
             pi.setValue(v, Integer.MAX_VALUE);
         }

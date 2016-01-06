@@ -13,4 +13,5 @@ public class ABox extends MBox
     public String getType() {
         return "A";
     }
+
 }

@@ -1,8 +1,8 @@
 package dijkstra;
 
 public interface PiInterface {
-	// Définit la valeur d'un sommet
-    public void setValue(int value, VertexInterface vertex);
+    // DÃ©finit la valeur d'un sommet
+    void setValue(VertexInterface vertex, int value);
     // Retourne la valeur d'un sommet
-    public int getValue(VertexInterface vertex);
+    int getValue(VertexInterface vertex);
 }
