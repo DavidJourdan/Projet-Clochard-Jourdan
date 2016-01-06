@@ -1,6 +1,6 @@
 package dijkstra;
 
 public interface PiInterface {
-    public void setValue(int value, VertexInterface vertex);
-    public int getValue(VertexInterface vertex);
+    void setValue(VertexInterface vertex, int value);
+    int getValue(VertexInterface vertex);
 }
