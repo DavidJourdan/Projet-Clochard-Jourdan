@@ -4,12 +4,12 @@ import java.util.Hashtable;
 
 public class Pi implements PiInterface {
     @Override
-    public void setValue(int value, VertexInterface vertex) {
+    public void setValue(VertexInterface vertex, int value) {
 
     }
 
     @Override
     public int getValue(VertexInterface vertex) {
-        return 0;
+
     }
 }

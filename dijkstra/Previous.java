@@ -11,11 +11,11 @@ public class Previous implements PreviousInterface {
 
     @Override
     public VertexInterface getValue(VertexInterface vertex) {
-        return null;
+
     }
 
     @Override
     public ArrayList<VertexInterface> getShortestPathTo(VertexInterface vertex) {
-        return null;
+
     }
 }
