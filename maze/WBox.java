@@ -1,16 +1,15 @@
 package maze;
 
-public class WBox extends MBox
-{
+public class WBox extends MBox {
     private int x;
     private int y;
-    private Maze m;
 
-    public WBox(int x, int y, Maze m) {
-        super(x, y, m);
+    public WBox(int x, int y) {
+        super(x, y);
     }
 
-    public String getLabel() {
+    @Override
+    public String getType() {
         return "W";
     }
 

@@ -3,12 +3,10 @@ package maze;
 public class MBox implements dijkstra.VertexInterface{
     private int x;
     private int y;
-    private Maze m;
 
-    public MBox(int x, int y, Maze m) {
+    public MBox(int x, int y) {
         this.x = x;
         this.y = y;
-        this.m = m;
     }
 
     public int getX() {
@@ -19,12 +17,9 @@ public class MBox implements dijkstra.VertexInterface{
         return y;
     }
 
-    public Maze getM() {
-        return m;
-    }
-
     public String getLabel() {
-        return "M";
+        return "(" + x + "," + y + ")";
     }
 
+    public abstract String getType();
 }

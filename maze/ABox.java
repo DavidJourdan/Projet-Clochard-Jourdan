@@ -4,13 +4,13 @@ public class ABox extends MBox
 {
     private int x;
     private int y;
-    private Maze m;
 
-    public ABox(int x, int y, Maze m) {
-        super(x, y, m);
+    public ABox(int x, int y) {
+        super(x, y);
     }
 
-    public String getLabel() {
+    @Override
+    public String getType() {
         return "A";
     }
 

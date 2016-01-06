@@ -1,17 +1,15 @@
 package maze;
 
-public class EBox extends MBox
-{
-    private Maze m;
+public class EBox extends MBox {
     private int x;
     private int y;
 
-    public EBox(int x, int y, Maze m) {
-        super(x, y, m);
+    public EBox(int x, int y) {
+        super(x, y);
     }
 
-    public String getLabel() {
+    @Override
+    public String getType() {
         return "E";
     }
 }
-
