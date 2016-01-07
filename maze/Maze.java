@@ -132,7 +132,7 @@ public class Maze implements GraphInterface {
             }
             if(str == null)
                 throw new MazeReadingException(fileName, width - 1, "Invalid number of lines");
-        } catch (FileNotFoundException e) { //Fichier non trouv√©
+        } catch (FileNotFoundException e) { //Fichier non trouve
             System.err.println("Error 404: File not Found");
             e.printStackTrace(System.err);
         } catch (IOException e) { // Erreur de lecture
@@ -162,24 +162,14 @@ public class Maze implements GraphInterface {
 
             // On regarde chaque case et on recupere le caractere correspondant pour ecrire dans le fichier
             for(int i=0; i<height-1; i++) {   // Lignes
-
                 String str = "";
                 for(int j=0; j<width-1; j++){ // Colonnes
                     MBox box = boxes[i][j];
                     str = str.concat(box.getType());
-                } // Chaque case est mise dans le fichier
-                pw.println(str); // On change de ligne quand on a fini d'en etudier une
+                } 
+                pw.println(str); // On saute une ligne quand on a fini d'en etudier une
             }
-
         } catch (FileNotFoundException e) { // Fichier non trouve
-
-            // on ne veut pas d'espace a† la fin du fichier sauve
-            String str = "";
-            for(int j=0; j<width-1; j++){ // Colonnes
-                MBox box = boxes[height-1][j];
-                str = str.concat(box.getType());
-            }
-            pw.print(str);
             System.err.println("Error 404: File not Found \"" + fileName + "\"");
         } catch (SecurityException e) { // Erreur de securite
             System.err.println("Security Error \"" + fileName + "\"");
