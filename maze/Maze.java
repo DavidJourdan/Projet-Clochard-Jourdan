@@ -160,7 +160,7 @@ public class Maze implements GraphInterface {
             bw = new BufferedWriter(fw) ;
             pw = new PrintWriter(bw) ;
             // On regarde chaque case et on récupère le caractère correspondant pour écrire dans le fichier
-            for(int i=0; i<height; i++) {   // Lignes
+            for(int i=0; i<height-1; i++) {   // Lignes
                 String str = "";
                 for(int j=0; j<width; j++){ // Colonnes
                     MBox box = boxes[i][j];
@@ -168,6 +168,13 @@ public class Maze implements GraphInterface {
                 } // Chaque case est mise dans le fichier
                 pw.println(str); // On change de ligne quand on a fini d'en étudier une
             }
+            // on ne veut pas d'espace à la fin du fichier sauvé
+            String str = "";
+            for(int j=0; j<width; j++){ // Colonnes
+                MBox box = boxes[height-1][j];
+                str = str.concat(box.getType());
+            }
+            pw.print(str);
         } catch (FileNotFoundException e) { // Fichier non trouvé
             System.err.println("Error 404: File not Found \"" + fileName + "\"");
         } catch (SecurityException e) { // Erreur de sécurité
