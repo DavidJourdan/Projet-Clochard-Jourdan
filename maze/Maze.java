@@ -93,20 +93,19 @@ public class Maze implements GraphInterface {
             bin = new BufferedReader(fin);
 
             String str = null;
-            for(int x = 0; x<height; x++) {
+            for(int x = 0; x<height-1; x++) {
                 str = bin.readLine();
                 // Si la longueur du texte n'est pas de la meme taille que le texte, il y a une erreur.
-                if(str.length()!= width)
+              if(str.length()!= width)
                     throw new MazeReadingException(fileName, x,"Invalid column length");
-                for(int y = 0; y<width; y++) {
+                for(int y = 0; y<width-1; y++) {
                     switch(str.charAt(y)) {
-                        // Lorsque la lettre rencontree est A, E, D ou W, on la met dans la case
                         // Lorsque la lettre rencontree est A, E ou D, on la met dans la liste des cases franchissables
                         case('A'):
                             ABox a = new ABox(x,y);
                             boxes[x][y] = a;
                             vertices.add(a);
-                            System.out.print("A"); // test pour vÃ©rifier que tout se passe correctement
+                            System.out.print("A"); // test pour verifier que tout se passe correctement
                             break;
                         case('W'):
                             boxes[x][y] = new WBox(x,y);
@@ -145,9 +144,9 @@ public class Maze implements GraphInterface {
         } finally {
             if (fin != null)
                 try { fin.close(); } catch (Exception e) {}
-            // On ferme FileReader
-            if (bin != null)
-                try { bin.close(); } catch (Exception e) {}
+           // On ferme FileReader
+            if (bin != null);
+              try { bin.close(); } catch (Exception e) {}
             // On ferme BufferedReader
         }
     }
@@ -165,7 +164,7 @@ public class Maze implements GraphInterface {
             for(int i=0; i<height-1; i++) {   // Lignes
 
                 String str = "";
-                for(int j=0; j<width; j++){ // Colonnes
+                for(int j=0; j<width-1; j++){ // Colonnes
                     MBox box = boxes[i][j];
                     str = str.concat(box.getType());
                 } // Chaque case est mise dans le fichier
@@ -176,7 +175,7 @@ public class Maze implements GraphInterface {
 
             // on ne veut pas d'espace a  la fin du fichier sauve
             String str = "";
-            for(int j=0; j<width; j++){ // Colonnes
+            for(int j=0; j<width-1; j++){ // Colonnes
                 MBox box = boxes[height-1][j];
                 str = str.concat(box.getType());
             }
