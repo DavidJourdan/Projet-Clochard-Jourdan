@@ -20,6 +20,14 @@ public class Maze implements GraphInterface {
         boxes = new MBox[height][width];
     }
 
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
     // Retourne les informations de la case
     // ne renvoie le sommet que s'il est dans vertices
     public MBox getBox(int x, int y) {
@@ -83,13 +91,14 @@ public class Maze implements GraphInterface {
         try {
             fin = new FileReader(fileName);
             bin = new BufferedReader(fin);
-            String str = bin.readLine();
-            int x = 0, y = 0;
-            while(x < height) {
+
+            String str = null;
+            for(int x = 0; x<height; x++) {
+                str = bin.readLine();
                 // Si la longueur du texte n'est pas de la meme taille que le texte, il y a une erreur.
                 if(str.length()!= width)
                     throw new MazeReadingException(fileName, x,"Invalid column length");
-                while (y < width) {
+                for(int y = 0; y<width; y++) {
                     switch(str.charAt(y)) {
                         // Lorsque la lettre rencontree est A, E, D ou W, on la met dans la case
                         // Lorsque la lettre rencontree est A, E ou D, on la met dans la liste des cases franchissables
@@ -97,30 +106,33 @@ public class Maze implements GraphInterface {
                             ABox a = new ABox(x,y);
                             boxes[x][y] = a;
                             vertices.add(a);
+                            System.out.print("A"); // test pour vérifier que tout se passe correctement
                             break;
                         case('W'):
                             boxes[x][y] = new WBox(x,y);
+                            System.out.print("W");
                             break;
                         case('E'):
                             EBox e = new EBox(x,y);
                             boxes[x][y] = e;
                             vertices.add(e);
+                            System.out.print("E");
                             break;
                         case('D'):
                             DBox d = new DBox(x,y);
                             boxes[x][y] = d;
                             vertices.add(d);
+                            System.out.print("D");
                             break;
                         // Si la lettre n'est ni E, ni A, ni D, ni W, alors il y a une erreur dans le texte.
                         default:
                             throw new MazeReadingException(fileName, x, String.format("Character not supported : %s", str.charAt(y)));
                     }
-                    y++;
                 }
-                x++;
+                System.out.println();
             }
             if(str == null)
-                throw new MazeReadingException(fileName, x, "Invalid number of lines");
+                throw new MazeReadingException(fileName, width - 1, "Invalid number of lines");
         } catch (FileNotFoundException e) { //Fichier non trouvé
             System.err.println("Error 404: File not Found");
             e.printStackTrace(System.err);
@@ -148,8 +160,10 @@ public class Maze implements GraphInterface {
             fw = new FileWriter(fileName, false) ;
             bw = new BufferedWriter(fw) ;
             pw = new PrintWriter(bw) ;
+
             // On regarde chaque case et on recupere le caractere correspondant pour ecrire dans le fichier
-            for(int i=0; i<height; i++) {   // Lignes
+            for(int i=0; i<height-1; i++) {   // Lignes
+
                 String str = "";
                 for(int j=0; j<width; j++){ // Colonnes
                     MBox box = boxes[i][j];
@@ -157,7 +171,16 @@ public class Maze implements GraphInterface {
                 } // Chaque case est mise dans le fichier
                 pw.println(str); // On change de ligne quand on a fini d'en etudier une
             }
+
         } catch (FileNotFoundException e) { // Fichier non trouve
+
+            // on ne veut pas d'espace a� la fin du fichier sauve
+            String str = "";
+            for(int j=0; j<width; j++){ // Colonnes
+                MBox box = boxes[height-1][j];
+                str = str.concat(box.getType());
+            }
+            pw.print(str);
             System.err.println("Error 404: File not Found \"" + fileName + "\"");
         } catch (SecurityException e) { // Erreur de securite
             System.err.println("Security Error \"" + fileName + "\"");
