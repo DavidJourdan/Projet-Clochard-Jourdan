@@ -20,14 +20,6 @@ public class Maze implements GraphInterface {
         boxes = new MBox[height][width];
     }
 
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
     // Retourne les informations de la case
     // ne renvoie le sommet que s'il est dans vertices
     public MBox getBox(int x, int y) {
@@ -51,6 +43,10 @@ public class Maze implements GraphInterface {
         MBox box = (MBox) vertex;
         int x = box.getX();
         int y = box.getY();
+
+        // un mur n'a pas de successeurs
+        if(box.getType() == "W")
+            return successors;
 
         // On regarde chaque case voisine
 
@@ -105,30 +101,25 @@ public class Maze implements GraphInterface {
                             ABox a = new ABox(x,y);
                             boxes[x][y] = a;
                             vertices.add(a);
-                            System.out.print("A"); // test pour vérifier que tout se passe correctement
-                            break;
-                        case('W'):
-                            boxes[x][y] = new WBox(x,y);
-                            System.out.print("W");
                             break;
                         case('E'):
                             EBox e = new EBox(x,y);
                             boxes[x][y] = e;
                             vertices.add(e);
-                            System.out.print("E");
                             break;
                         case('D'):
                             DBox d = new DBox(x,y);
                             boxes[x][y] = d;
                             vertices.add(d);
-                            System.out.print("D");
                             break;
+                        case('W'):
+                            boxes[x][y] = new WBox(x,y);
+                            break; // les W ne sont pas ajoutés dans vertices
                         // Si la lettre n'est ni E, ni A, ni D, ni W, alors il y a une erreur dans le texte.
                         default:
                             throw new MazeReadingException(fileName, x, String.format("Character not supported : %s", str.charAt(y)));
                     }
                 }
-                System.out.println();
             }
             if(str == null)
                 throw new MazeReadingException(fileName, width - 1, "Invalid number of lines");
