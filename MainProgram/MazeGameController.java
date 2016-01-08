@@ -78,9 +78,9 @@ public class MazeGameController extends GameController {
 				gameModel.set(bw, bh, c);
 				notify(gameModel);
 				break;
-				case ((byte)10) :				// Quand on clique sur une case arrivee, elle devient une case depart
-					maze.setBox(bh, bw, 'D');
-				c=(byte)2;
+				case ((byte)10) :				// Quand on clique sur une case arrivee, elle devient une case vide
+					maze.setBox(bh, bw, 'E');
+				c=(byte)0;
 				gameModel.set(bw, bh, c);
 				notify(gameModel);
 				break;
