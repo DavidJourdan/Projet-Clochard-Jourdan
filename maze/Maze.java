@@ -45,10 +45,6 @@ public class Maze implements GraphInterface {
             return null;
     }
 
-	public final MBox getBox2(int line, int column) // renvoie la case aux coordonnées demandées
-	{
-		return boxes[line][column];
-	}
 	
     public void setBox(int x, int y, char letter){
     	switch (letter) 
