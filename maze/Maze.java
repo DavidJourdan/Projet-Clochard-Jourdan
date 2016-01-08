@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class Maze implements GraphInterface {
 
     private ArrayList<VertexInterface> vertices = new ArrayList<>(); // tableau contenant les cases franchissables
-    private int height, width;
+    private final int height, width;
     private MBox[][] boxes;    // tableau contenant toutes les cases du labyrinthe
 
 
@@ -21,11 +21,18 @@ public class Maze implements GraphInterface {
         // on initialise un cadre de W
         for (int i=0 ; i < height+2 ; i++) {
             boxes[i][0]=new WBox(i, 0);
-            boxes[i][width+1]=new WBox(i, width+2-1);
+            boxes[i][width+1]=new WBox(i, width+1);
         }
         for (int j=1 ; j < width+1 ; j++) {
             boxes[0][j]=new WBox(0, j);
-            boxes[height+2-1][j]=new WBox(height+1, j);
+            boxes[height+1][j]=new WBox(height+1, j);
+        }
+        // pour la lisibilite, l'interieur est initialise avec des cases vides
+        for (int i=1 ; i < height+1 ; i++) {
+            for (int j=1 ; j < width+1 ; j++)
+            {
+                boxes[i][j] = new EBox(i,j);
+            }
         }
     }
 
