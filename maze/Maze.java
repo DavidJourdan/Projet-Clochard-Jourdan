@@ -10,32 +10,36 @@ import java.util.ArrayList;
 public class Maze implements GraphInterface {
 
     private ArrayList<VertexInterface> vertices = new ArrayList<VertexInterface>(); // tableau contenant les cases franchissables
-    private int height, width;
+    private final int height, width;
     private MBox[][] boxes;    // tableau contenant toutes les cases du labyrinthe
 
 
     public Maze(int height, int width) {
         this.height = height;
         this.width = width;
-        for(int i = 0 ; i < height ; i++){
-        	for(int j=0; j<width;j++){
-        		new WBox(i,j);
-        	}
+        boxes = new MBox[height+2][width+2];
+        // on initialise un cadre de W
+        for (int i=0 ; i < height+2 ; i++) {
+            boxes[i][0]=new WBox(i, 0);
+            boxes[i][width+1]=new WBox(i, width+1);
         }
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWidth() {
-        return width;
+        for (int j=1 ; j < width+1 ; j++) {
+            boxes[0][j]=new WBox(0, j);
+            boxes[height+1][j]=new WBox(height+1, j);
+        }
+        // pour la lisibilite, l'interieur est initialise avec des cases vides
+        for (int i=1 ; i < height+1 ; i++) {
+            for (int j=1 ; j < width+1 ; j++) {
+                boxes[i][j] = new EBox(i,j);
+            }
+        }
     }
 
     // Retourne la case aux informations demandees
     // ne renvoie le sommet que s'il est dans vertices
-    public final MBox getBox(int x, int y) {
-        if(x>=0 && x<height && y>=0 && y<width)
+
+    public MBox getBox(int x, int y) {
+        if(x>=0 && x<height+2 && y>=0 && y<width+2)
             return boxes[x][y];
         else
             return null;
@@ -73,6 +77,10 @@ public class Maze implements GraphInterface {
         MBox box = (MBox) vertex;
         int x = box.getX();
         int y = box.getY();
+
+        // un mur n'a pas de successeurs
+        if(box.getType() == "W")
+            return successors; // une liste vide
 
         // On regarde chaque case voisine
 
@@ -115,42 +123,41 @@ public class Maze implements GraphInterface {
             bin = new BufferedReader(fin);
 
             String str = null;
-            for(int x = 0; x<height-1; x++) {
+
+            for(int x = 1; x<height+1; x++) {
                 str = bin.readLine();
                 // Si la longueur du texte n'est pas de la meme taille que le texte, il y a une erreur.
               if(str.length()!= width)
                     throw new MazeReadingException(fileName, x,"Invalid column length");
-                for(int y = 0; y<width-1; y++) {
-                    switch(str.charAt(y)) {
+              
+              for(int y = 1; y<width+1; y++) {
+                    switch(str.charAt(y-1)) {
+                        // Lorsque la lettre rencontree est A, E, D ou W, on la met dans la case
+                    
                         // Lorsque la lettre rencontree est A, E ou D, on la met dans la liste des cases franchissables
                         case('A'):
                             ABox a = new ABox(x,y);
                             boxes[x][y] = a;
                             vertices.add(a);
-                            System.out.print("A"); // test pour verifier que tout se passe correctement
-                            break;
-                        case('W'):
-                            boxes[x][y] = new WBox(x,y);
-                            System.out.print("W");
                             break;
                         case('E'):
                             EBox e = new EBox(x,y);
                             boxes[x][y] = e;
                             vertices.add(e);
-                            System.out.print("E");
                             break;
                         case('D'):
                             DBox d = new DBox(x,y);
                             boxes[x][y] = d;
                             vertices.add(d);
-                            System.out.print("D");
                             break;
+                        case('W'):
+                            boxes[x][y] = new WBox(x,y);
+                            break; // les W ne sont pas ajoutes dans vertices
                         // Si la lettre n'est ni E, ni A, ni D, ni W, alors il y a une erreur dans le texte.
                         default:
                             throw new MazeReadingException(fileName, x, String.format("Character not supported : %s", str.charAt(y)));
                     }
                 }
-                System.out.println();
             }
             if(str == null)
                 throw new MazeReadingException(fileName, width - 1, "Invalid number of lines");
@@ -183,13 +190,15 @@ public class Maze implements GraphInterface {
             pw = new PrintWriter(bw) ;
 
             // On regarde chaque case et on recupere le caractere correspondant pour ecrire dans le fichier
-            for(int i=0; i<height-1; i++) {   // Lignes
+            for(int i=0; i<height; i++) {   // Lignes
                 String str = "";
-                for(int j=0; j<width-1; j++){ // Colonnes
-                    MBox box = boxes[i][j];
+                for(int j=0; j<width; j++){ // Colonnes
+                    MBox box = boxes[i+1][j+1];
                     str = str.concat(box.getType());
-                } 
-                pw.println(str); // On saute une ligne quand on a fini d'en etudier une
+                }
+                pw.print(str); // On saute une ligne quand on a fini d'en etudier une
+                if(i<height-1)
+                    pw.println();
             }
         } catch (FileNotFoundException e) { // Fichier non trouve
             System.err.println("Error 404: File not Found \"" + fileName + "\"");
