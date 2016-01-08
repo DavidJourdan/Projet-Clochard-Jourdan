@@ -3,13 +3,14 @@ package maze;
 import dijkstra.GraphInterface;
 import dijkstra.VertexInterface;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 
 
 public class Maze implements GraphInterface {
 
-    private ArrayList<VertexInterface> vertices = new ArrayList<>(); // tableau contenant les cases franchissables
+    private ArrayList<VertexInterface> vertices = new ArrayList<VertexInterface>(); // tableau contenant les cases franchissables
     private final int height, width;
     private MBox[][] boxes;    // tableau contenant toutes les cases du labyrinthe
 
@@ -29,22 +30,35 @@ public class Maze implements GraphInterface {
         }
         // pour la lisibilite, l'interieur est initialise avec des cases vides
         for (int i=1 ; i < height+1 ; i++) {
-            for (int j=1 ; j < width+1 ; j++)
-            {
+            for (int j=1 ; j < width+1 ; j++) {
                 boxes[i][j] = new EBox(i,j);
             }
         }
     }
 
-    // Retourne les informations de la case
+    // Retourne la case aux informations demandees
     // ne renvoie le sommet que s'il est dans vertices
+
     public MBox getBox(int x, int y) {
         if(x>=0 && x<height+2 && y>=0 && y<width+2)
             return boxes[x][y];
         else
             return null;
     }
-
+	
+    public void setBox(int x, int y, char letter){
+    	switch (letter) 
+		{
+		case 'D' :
+			new DBox(x, y); break;
+		case 'A' :
+			new ABox(x, y); break;
+		case 'W' :
+			new WBox(x, y); break;
+		case 'E' :
+			new EBox(x, y); break; 			
+		}
+    }
 
     public ArrayList<VertexInterface> getAllVertices() {
         return vertices;
@@ -52,9 +66,9 @@ public class Maze implements GraphInterface {
 
     // cherche dans boxes les cases franchissables autour de vertex
     public ArrayList<VertexInterface> getSuccessors(VertexInterface vertex) {
-        ArrayList<VertexInterface> successors = new ArrayList<>();
+        ArrayList<VertexInterface> successors = new ArrayList<VertexInterface>();
 
-        // Chaque sommet doit être une case du labyrinthe
+        // Chaque sommet doit etre une case du labyrinthe
         // On fait donc un transtypage
         MBox box = (MBox) vertex;
         int x = box.getX();
@@ -90,7 +104,7 @@ public class Maze implements GraphInterface {
         ArrayList<VertexInterface> successors = getSuccessors(src);
         if(successors.contains(dst))
             return 1;
-        //Deux sommets non relies dans le graphe peuvent être modelises par une arête de poids infini
+        //Deux sommets non relies dans le graphe peuvent etre modelises par une arete de poids infini
         else {
             System.out.println("Error : no edge between" + src.getLabel()+" and "+ dst.getLabel());
             return Integer.MAX_VALUE;
@@ -103,15 +117,19 @@ public class Maze implements GraphInterface {
         try {
             fin = new FileReader(fileName);
             bin = new BufferedReader(fin);
+
             String str = null;
+
             for(int x = 1; x<height+1; x++) {
                 str = bin.readLine();
-                // Si la longueur du texte n'est pas de la même taille que le texte, il y a une erreur.
-                if(str.length()!= width)
+                // Si la longueur du texte n'est pas de la meme taille que le texte, il y a une erreur.
+              if(str.length()!= width)
                     throw new MazeReadingException(fileName, x,"Invalid column length");
-                for(int y = 1; y<width+1; y++) {
+              
+              for(int y = 1; y<width+1; y++) {
                     switch(str.charAt(y-1)) {
                         // Lorsque la lettre rencontree est A, E, D ou W, on la met dans la case
+                    
                         // Lorsque la lettre rencontree est A, E ou D, on la met dans la liste des cases franchissables
                         case('A'):
                             ABox a = new ABox(x,y);
@@ -151,9 +169,9 @@ public class Maze implements GraphInterface {
         } finally {
             if (fin != null)
                 try { fin.close(); } catch (Exception e) {}
-            // On ferme FileReader
-            if (bin != null)
-                try { bin.close(); } catch (Exception e) {}
+           // On ferme FileReader
+            if (bin != null);
+              try { bin.close(); } catch (Exception e) {}
             // On ferme BufferedReader
         }
     }
@@ -166,7 +184,6 @@ public class Maze implements GraphInterface {
             fw = new FileWriter(fileName, false) ;
             bw = new BufferedWriter(fw) ;
             pw = new PrintWriter(bw) ;
-
             // On regarde chaque case et on recupere le caractere correspondant pour ecrire dans le fichier
             for(int i=0; i<height; i++) {   // Lignes
                 String str = "";
