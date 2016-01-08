@@ -8,7 +8,7 @@ public class Previous implements PreviousInterface {
     private final Hashtable<VertexInterface,VertexInterface> prev;
 
     public Previous(){
-        prev = new Hashtable<>();
+        prev = new Hashtable<VertexInterface, VertexInterface>();
     }
 
     public void setValue(VertexInterface vertex, VertexInterface value) {
@@ -22,7 +22,7 @@ public class Previous implements PreviousInterface {
     /** Liste pour montrer le chemin le plus court
      la racine et un sommet */
     public ArrayList<VertexInterface> getShortestPathTo(VertexInterface vertex) {
-        ArrayList<VertexInterface> path = new ArrayList<>();
+        ArrayList<VertexInterface> path = new ArrayList<VertexInterface>();
         while (vertex != null){ // quand la branche existe
             path.add(vertex); // on l'ajoute à la liste
             vertex = getValue(vertex);

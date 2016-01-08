@@ -1,13 +1,11 @@
-﻿package MainProgram;
+package MainProgram;
 
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-
 import maze.*;
 import interfaces.*;
 import dijkstra.*;
-
 import javax.swing.*;
 
 public class MazeGameController extends GameController {
@@ -21,33 +19,34 @@ public class MazeGameController extends GameController {
 	
 	private Maze maze ;
 
-    private int mazeNb = 1;
-	
+
 	public MazeGameController(String name, int gameWidth, int gameHeight, int blockWidth, int blockHeight) {
-		super(name,gameWidth,gameHeight,blockWidth,blockHeight) ;
-		this.gameModel = new GameModel(gameWidth,gameHeight,blockWidth,blockHeight) ;
+	{
+		super(name,gameWidth+2,gameHeight+2,blockWidth,blockHeight) ;
+		this.gameModel = new GameModel(gameWidth+2,gameHeight+2,blockWidth,blockHeight) ;
 		maze = new Maze(gameHeight, gameWidth);
-		for (int i=0;i<gameHeight;i++){
+		for (int i=0;i<gameHeight+2;i++){
 			byte b=(byte)4;
-			maze.setBox(i, gameWidth-1, 'W');
+			maze.setBox(i, gameWidth+1, 'W');
 			maze.setBox(i, 0, 'W');
-			gameModel.set(gameWidth-1, i, b);
+			gameModel.set(gameWidth+1, i, b);
 			gameModel.set(0, i, b);
 		}
-		for (int j=0;j<gameWidth;j++){
+		for (int j=0;j<gameWidth+2;j++){
 			byte b=(byte)4;
-			maze.setBox(gameHeight-1, j, 'W');
+			maze.setBox(gameHeight+1, j, 'W');
 			maze.setBox(0, j, 'W');
-			gameModel.set(j, gameHeight-1, b);
+			gameModel.set(j, gameHeight+1, b);
 			gameModel.set(j, 0, b);
 		}
-		for (int i=1; i<gameHeight-1; i++){
-			for (int j=1; j<gameWidth-1; j++){
+		for (int i=1; i<gameHeight+1; i++){
+			for (int j=1; j<gameWidth+1; j++){
 				byte b=(byte)0;
 				maze.setBox(i, j, 'E');
 				gameModel.set(j, i, b);
 			}
 		}
+
 		this.bw = 0 ;
 		this.bh = 0 ;
 	}
@@ -61,34 +60,49 @@ public class MazeGameController extends GameController {
 			bw = getGameX(e) ;
 			bh = getGameY(e) ;
 			byte c;
-		    if (gameModel.get(bw, bh)==(byte)0){ // Quand on clique sur une case vide, elle devient un mur
-		    	c=(byte)4;
-		    	maze.setBox(bh, bw, 'W');
-		    	gameModel.set(bw, bh, c);
-		    }
-		    if (gameModel.get(bw, bh)==(byte)4){ // Quand on clique sur un mur, il devient une case vide
-		    	c=(byte)0;
-		    	maze.setBox(bh, bw, 'E');
-		    	gameModel.set(bw, bh, c);
-		    }
+
+			if (bw==0 || bw==gameWidth-1 || bh==0 || bh==gameHeight-1){
+				return ;
+			}
 			if ((e.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
-			    if (gameModel.get(bw, bh)==(byte)0){ // Quand on Shift+clique sur une case vide, elle devient une case d�part
-			    	c=(byte)2;
-			    	maze.setBox(bh, bw, 'D');
-			    	gameModel.set(bw, bh, c);
-			    }
-			    if (gameModel.get(bw, bh)==(byte)2){ // Quand on clique sur une case d�part, elle devient une case arriv�e
-			    	c=(byte)10;
-			    	maze.setBox(bh, bw, 'A');
-			    	gameModel.set(bw, bh, c);
-			    }
-				/** if (maze.getBox(bh, bw).getType()=="D"){
+				switch (gameModel.get(bw, bh)) {
+				case ((byte)0) :				// Quand on clique sur une case vide, elle devient une case depart
+					c=(byte)2;
+				maze.setBox(bh, bw, 'D');
+				gameModel.set(bw, bh, c);
+				notify(gameModel);
+				break;
+				case ((byte)2) :				// Quand on clique sur une case depart, elle devient une case arrivee
 					maze.setBox(bh, bw, 'A');
-					c=(byte)4;
-				}*/				
+				c=(byte)10;
+				gameModel.set(bw, bh, c);
+				notify(gameModel);
+				break;
+				case ((byte)10) :				// Quand on clique sur une case arrivee, elle devient une case depart
+					maze.setBox(bh, bw, 'D');
+				c=(byte)2;
+				gameModel.set(bw, bh, c);
+				notify(gameModel);
+				break;
+				}
 			}
 			
-			notify(gameModel) ;
+			
+			switch (gameModel.get(bw, bh)) { 
+			case ((byte)0) :				// Quand on clique sur une case vide, elle devient un mur
+				c=(byte)4;
+			maze.setBox(bh, bw, 'W');
+			gameModel.set(bw, bh, c);
+			notify(gameModel);
+			break;
+			case ((byte)4) :				// Quand on clique sur un mur, il devient une case vide
+				maze.setBox(bh, bw, 'E');
+			c=(byte)0;
+			gameModel.set(bw, bh, c);
+			notify(gameModel);
+			break;
+			}
+
 		}
 
 	}

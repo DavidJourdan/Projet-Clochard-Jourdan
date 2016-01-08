@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 
 public class Maze implements GraphInterface {
-
     private ArrayList<VertexInterface> vertices = new ArrayList<VertexInterface>(); // tableau contenant les cases franchissables
     private final int height, width;
     private MBox[][] boxes;    // tableau contenant toutes les cases du labyrinthe
@@ -38,14 +37,12 @@ public class Maze implements GraphInterface {
 
     // Retourne la case aux informations demandees
     // ne renvoie le sommet que s'il est dans vertices
-
-    public MBox getBox(int x, int y) {
         if(x>=0 && x<height+2 && y>=0 && y<width+2)
             return boxes[x][y];
         else
             return null;
     }
-	
+
     public void setBox(int x, int y, char letter){
     	switch (letter) 
 		{
@@ -105,6 +102,7 @@ public class Maze implements GraphInterface {
         if(successors.contains(dst))
             return 1;
         //Deux sommets non relies dans le graphe peuvent etre modelises par une arete de poids infini
+
         else {
             System.out.println("Error : no edge between" + src.getLabel()+" and "+ dst.getLabel());
             return Integer.MAX_VALUE;
@@ -117,9 +115,6 @@ public class Maze implements GraphInterface {
         try {
             fin = new FileReader(fileName);
             bin = new BufferedReader(fin);
-
-            String str = null;
-
             for(int x = 1; x<height+1; x++) {
                 str = bin.readLine();
                 // Si la longueur du texte n'est pas de la meme taille que le texte, il y a une erreur.
@@ -129,7 +124,6 @@ public class Maze implements GraphInterface {
               for(int y = 1; y<width+1; y++) {
                     switch(str.charAt(y-1)) {
                         // Lorsque la lettre rencontree est A, E, D ou W, on la met dans la case
-                    
                         // Lorsque la lettre rencontree est A, E ou D, on la met dans la liste des cases franchissables
                         case('A'):
                             ABox a = new ABox(x,y);

@@ -7,7 +7,7 @@ public class ASet implements ASetInterface {
     private HashSet<VertexInterface> aSet;
 
     public ASet() {
-        aSet = new HashSet<>();
+        aSet = new HashSet<VertexInterface>();
     }
 
     public void add(VertexInterface vertex) {
