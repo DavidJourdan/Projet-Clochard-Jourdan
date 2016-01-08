@@ -1,10 +1,10 @@
 package MainProgramm;
 
 import java.awt.event.*;
-import java.util.Random;
 
 import maze.*;
 import interfaces.*;
+import dijkstra.*;
 
 public class MazeGameController extends GameController {
 
@@ -17,26 +17,73 @@ public class MazeGameController extends GameController {
 	
 	private Maze maze ;
 	
-	private int bw ;
-	private int bh ;
-	
 	public MazeGameController(String name, int gameWidth, int gameHeight, int blockWidth, int blockHeight)
 	{
 		super(name,gameWidth,gameHeight,blockWidth,blockHeight) ;
 		this.gameModel = new GameModel(gameWidth,gameHeight,blockWidth,blockHeight) ;
+		maze = new Maze(gameHeight, gameWidth);
+		for (int i=0;i<gameHeight;i++){
+			byte b=(byte)4;
+			maze.setBox(i, gameWidth-1, 'W');
+			maze.setBox(i, 0, 'W');
+			gameModel.set(gameWidth-1, i, b);
+			gameModel.set(0, i, b);
+		}
+		for (int j=0;j<gameWidth;j++){
+			byte b=(byte)4;
+			maze.setBox(gameHeight-1, j, 'W');
+			maze.setBox(0, j, 'W');
+			gameModel.set(j, gameHeight-1, b);
+			gameModel.set(j, 0, b);
+		}
+		for (int i=1; i<gameHeight-1; i++){
+			for (int j=1; j<gameWidth-1; j++){
+				byte b=(byte)0;
+				maze.setBox(i, j, 'E');
+				gameModel.set(j, i, b);
+			}
+		}
 		
 		this.bw = 0 ;
 		this.bh = 0 ;
 	}
 	
+	private int bw ;
+	private int bh ;
 	
 	
-	public void mouseClicked(MouseEvent e) {
+	public final synchronized void mouseClicked(MouseEvent e) {
 		synchronized (gameModel) {
 			bw = getGameX(e) ;
 			bh = getGameY(e) ;
-			byte c = (byte)3;
-			gameModel.set(bw,bh,c);
+			byte c;
+		    if (gameModel.get(bw, bh)==(byte)0){ // Quand on clique sur une case vide, elle devient un mur
+		    	c=(byte)4;
+		    	maze.setBox(bh, bw, 'W');
+		    	gameModel.set(bw, bh, c);
+		    }
+		    if (gameModel.get(bw, bh)==(byte)4){ // Quand on clique sur un mur, il devient une case vide
+		    	c=(byte)0;
+		    	maze.setBox(bh, bw, 'E');
+		    	gameModel.set(bw, bh, c);
+		    }
+			if ((e.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+			    if (gameModel.get(bw, bh)==(byte)0){ // Quand on Shift+clique sur une case vide, elle devient une case départ
+			    	c=(byte)2;
+			    	maze.setBox(bh, bw, 'D');
+			    	gameModel.set(bw, bh, c);
+			    }
+			    if (gameModel.get(bw, bh)==(byte)2){ // Quand on clique sur une case départ, elle devient une case arrivée
+			    	c=(byte)10;
+			    	maze.setBox(bh, bw, 'A');
+			    	gameModel.set(bw, bh, c);
+			    }
+				/** if (maze.getBox(bh, bw).getType()=="D"){
+					maze.setBox(bh, bw, 'A');
+					c=(byte)4;
+				}*/				
+			}
+			
 			notify(gameModel) ;
 		}
 

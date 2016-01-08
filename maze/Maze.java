@@ -17,7 +17,11 @@ public class Maze implements GraphInterface {
     public Maze(int height, int width) {
         this.height = height;
         this.width = width;
-        boxes = new MBox[height][width];
+        for(int i = 0 ; i < height ; i++){
+        	for(int j=0; j<width;j++){
+        		new WBox(i,j);
+        	}
+        }
     }
 
     public int getHeight() {
@@ -28,15 +32,33 @@ public class Maze implements GraphInterface {
         return width;
     }
 
-    // Retourne les informations de la case
+    // Retourne la case aux informations demandees
     // ne renvoie le sommet que s'il est dans vertices
-    public MBox getBox(int x, int y) {
+    public final MBox getBox(int x, int y) {
         if(x>=0 && x<height && y>=0 && y<width)
             return boxes[x][y];
         else
             return null;
     }
 
+	public final MBox getBox2(int line, int column) // renvoie la case aux coordonnées demandées
+	{
+		return boxes[line][column];
+	}
+	
+    public void setBox(int x, int y, char letter){
+    	switch (letter) 
+		{
+		case 'D' :
+			new DBox(x, y); break;
+		case 'A' :
+			new ABox(x, y); break;
+		case 'W' :
+			new WBox(x, y); break;
+		case 'E' :
+			new EBox(x, y); break; 			
+		}
+    }
 
     public ArrayList<VertexInterface> getAllVertices() {
         return vertices;
