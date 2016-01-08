@@ -17,13 +17,22 @@ public class Maze implements GraphInterface {
     public Maze(int height, int width) {
         this.height = height;
         this.width = width;
-        boxes = new MBox[height][width];
+        boxes = new MBox[height+2][width+2];
+        // on initialise un cadre de W
+        for (int i=0 ; i < height+2 ; i++) {
+            boxes[i][0]=new WBox(i, 0);
+            boxes[i][width+1]=new WBox(i, width+2-1);
+        }
+        for (int j=1 ; j < width+1 ; j++) {
+            boxes[0][j]=new WBox(0, j);
+            boxes[height+2-1][j]=new WBox(height+1, j);
+        }
     }
 
     // Retourne les informations de la case
     // ne renvoie le sommet que s'il est dans vertices
     public MBox getBox(int x, int y) {
-        if(x>=0 && x<height && y>=0 && y<width)
+        if(x>=0 && x<height+2 && y>=0 && y<width+2)
             return boxes[x][y];
         else
             return null;
@@ -46,7 +55,7 @@ public class Maze implements GraphInterface {
 
         // un mur n'a pas de successeurs
         if(box.getType() == "W")
-            return successors;
+            return successors; // une liste vide
 
         // On regarde chaque case voisine
 
@@ -74,7 +83,7 @@ public class Maze implements GraphInterface {
         ArrayList<VertexInterface> successors = getSuccessors(src);
         if(successors.contains(dst))
             return 1;
-        //Deux sommets non reliés dans le graphe peuvent être modélisés par une arête de poids infini
+        //Deux sommets non relies dans le graphe peuvent être modelises par une arête de poids infini
         else {
             System.out.println("Error : no edge between" + src.getLabel()+" and "+ dst.getLabel());
             return Integer.MAX_VALUE;
@@ -88,15 +97,15 @@ public class Maze implements GraphInterface {
             fin = new FileReader(fileName);
             bin = new BufferedReader(fin);
             String str = null;
-            for(int x = 0; x<height; x++) {
+            for(int x = 1; x<height+1; x++) {
                 str = bin.readLine();
                 // Si la longueur du texte n'est pas de la même taille que le texte, il y a une erreur.
                 if(str.length()!= width)
                     throw new MazeReadingException(fileName, x,"Invalid column length");
-                for(int y = 0; y<width; y++) {
-                    switch(str.charAt(y)) {
-                        // Lorsque la lettre rencontrée est A, E, D ou W, on la met dans la case
-                        // Lorsque la lettre rencontrée est A, E ou D, on la met dans la liste des cases franchissables
+                for(int y = 1; y<width+1; y++) {
+                    switch(str.charAt(y-1)) {
+                        // Lorsque la lettre rencontree est A, E, D ou W, on la met dans la case
+                        // Lorsque la lettre rencontree est A, E ou D, on la met dans la liste des cases franchissables
                         case('A'):
                             ABox a = new ABox(x,y);
                             boxes[x][y] = a;
@@ -114,7 +123,7 @@ public class Maze implements GraphInterface {
                             break;
                         case('W'):
                             boxes[x][y] = new WBox(x,y);
-                            break; // les W ne sont pas ajoutés dans vertices
+                            break; // les W ne sont pas ajoutes dans vertices
                         // Si la lettre n'est ni E, ni A, ni D, ni W, alors il y a une erreur dans le texte.
                         default:
                             throw new MazeReadingException(fileName, x, String.format("Character not supported : %s", str.charAt(y)));
@@ -123,7 +132,7 @@ public class Maze implements GraphInterface {
             }
             if(str == null)
                 throw new MazeReadingException(fileName, width - 1, "Invalid number of lines");
-        } catch (FileNotFoundException e) { //Fichier non trouvé
+        } catch (FileNotFoundException e) { //Fichier non trouve
             System.err.println("Error 404: File not Found");
             e.printStackTrace(System.err);
         } catch (IOException e) { // Erreur de lecture
@@ -150,25 +159,21 @@ public class Maze implements GraphInterface {
             fw = new FileWriter(fileName, false) ;
             bw = new BufferedWriter(fw) ;
             pw = new PrintWriter(bw) ;
-            // On regarde chaque case et on récupère le caractère correspondant pour écrire dans le fichier
-            for(int i=0; i<height-1; i++) {   // Lignes
+
+            // On regarde chaque case et on recupere le caractere correspondant pour ecrire dans le fichier
+            for(int i=0; i<height; i++) {   // Lignes
                 String str = "";
                 for(int j=0; j<width; j++){ // Colonnes
-                    MBox box = boxes[i][j];
+                    MBox box = boxes[i+1][j+1];
                     str = str.concat(box.getType());
-                } // Chaque case est mise dans le fichier
-                pw.println(str); // On change de ligne quand on a fini d'en étudier une
+                }
+                pw.print(str); // On saute une ligne quand on a fini d'en etudier une
+                if(i<height-1)
+                    pw.println();
             }
-            // on ne veut pas d'espace à la fin du fichier sauvé
-            String str = "";
-            for(int j=0; j<width; j++){ // Colonnes
-                MBox box = boxes[height-1][j];
-                str = str.concat(box.getType());
-            }
-            pw.print(str);
-        } catch (FileNotFoundException e) { // Fichier non trouvé
+        } catch (FileNotFoundException e) { // Fichier non trouve
             System.err.println("Error 404: File not Found \"" + fileName + "\"");
-        } catch (SecurityException e) { // Erreur de sécurité
+        } catch (SecurityException e) { // Erreur de securite
             System.err.println("Security Error \"" + fileName + "\"");
         } catch (Exception e) { // Erreur inconnue
             System.err.println("Unknown Error");
