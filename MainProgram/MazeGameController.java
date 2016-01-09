@@ -15,13 +15,12 @@ public class MazeGameController extends GameController {
 
 	
 	public static void main(String[] args) {
-		new MazeGameController("MyMaze",10,10,40,40);
+		new MazeGameController("Labyrinthe de Kei-Saburo Clochard et David Jourdan",10,10,40,40);
 	}
 
 	private final GameModel  gameModel ;
 	
-	private Maze maze ;
-	private int mazeNb = 1;
+	private Maze maze;
     private final int height, width;
 
 
@@ -31,27 +30,7 @@ public class MazeGameController extends GameController {
         width = gameWidth;
 		this.gameModel = new GameModel(gameWidth+2,gameHeight+2,blockWidth,blockHeight) ;
 		maze = new Maze(gameHeight, gameWidth);
-		for (int i=0;i<gameHeight+2;i++){
-			byte b=(byte)4;
-			maze.setBox(i, gameWidth+1, 'W');
-			maze.setBox(i, 0, 'W');
-			gameModel.set(gameWidth+1, i, b);
-			gameModel.set(0, i, b);
-		}
-		for (int j=0;j<gameWidth+2;j++){
-			byte b=(byte)4;
-			maze.setBox(gameHeight+1, j, 'W');
-			maze.setBox(0, j, 'W');
-			gameModel.set(j, gameHeight+1, b);
-			gameModel.set(j, 0, b);
-		}
-		for (int i=1; i<gameHeight+1; i++){
-			for (int j=1; j<gameWidth+1; j++){
-				byte b=(byte)0;
-				maze.setBox(i, j, 'E');
-				gameModel.set(j, i, b);
-			}
-		}
+        updateAll();
 
 		this.bw = 0 ;
 		this.bh = 0 ;
@@ -66,7 +45,6 @@ public class MazeGameController extends GameController {
 			bw = getGameX(e) ;
 			bh = getGameY(e) ;
 			byte c;
-
 			if (bw==0 || bw==gameWidth-1 || bh==0 || bh==gameHeight-1){
 				return ;
 			}
@@ -92,53 +70,40 @@ public class MazeGameController extends GameController {
                     break;
 				}
 			}
-			
-			
 			switch (gameModel.get(bw, bh)) { 
 			case ((byte)0) :				// Quand on clique sur une case vide, elle devient un mur
 				c=(byte)4;
-			maze.setBox(bh, bw, 'W');
-			gameModel.set(bw, bh, c);
-			notify(gameModel);
-			break;
+                maze.setBox(bh, bw, 'W');
+                gameModel.set(bw, bh, c);
+                notify(gameModel);
+                break;
 			case ((byte)4) :				// Quand on clique sur un mur, il devient une case vide
 				maze.setBox(bh, bw, 'E');
-			c=(byte)0;
-			gameModel.set(bw, bh, c);
-			notify(gameModel);
-			break;
+                c=(byte)0;
+                gameModel.set(bw, bh, c);
+                notify(gameModel);
+                break;
 			}
-
 		}
-
 	}
 
     private void updateAll() {
         for(int i=0; i<height+2; i++) {
             for(int j=0; j<width+2; j++) {
                 char type = maze.getBox(i,j).getType().charAt(0);
+                byte c=0;
                 switch(type) {
                     case 'A':
-                        byte c=(byte)10;
-                        gameModel.set(j, i, c);
-                        notify(gameModel);
-                        break;
+                        c=(byte)10; break;
                     case 'D':
-                        c=(byte)2;
-                        gameModel.set(j, i, c);
-                        notify(gameModel);
-                        break;
+                        c=(byte)2; break;
                     case 'E':
-                        c=(byte)0;
-                        gameModel.set(j, i, c);
-                        notify(gameModel);
-                        break;
+                        c=(byte)0; break;
                     case 'W':
-                        c=(byte)4;
-                        gameModel.set(j, i, c);
-                        notify(gameModel);
-                        break;
+                        c=(byte)4; break;
                 }
+                gameModel.set(j, i, c);
+                notify(gameModel);
             }
         }
     }
@@ -147,20 +112,18 @@ public class MazeGameController extends GameController {
         try {
             switch(e.getKeyChar()) {
                 case('s'):
-                    String fileName = "data/labyrinthe" + Integer.toString(mazeNb) + ".txt";
                     JFileChooser fileChooser = new JFileChooser();
                     if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                         File file = fileChooser.getSelectedFile();
-                        fileName = file.getAbsolutePath();
+                        String fileName = file.getAbsolutePath();
+                        maze.saveToTextFile(fileName);
                     }
-                    // sauvegarde dans tous les cas (au pire avec un nom choisi automatiquement)
-                    maze.saveToTextFile(fileName);
                     break;
                 case('o'):
                     fileChooser = new JFileChooser();
                     if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                         File file = fileChooser.getSelectedFile();
-                        fileName = file.getAbsolutePath();
+                        String fileName = file.getAbsolutePath();
                         maze.initFromTextFile(fileName);
                         updateAll();
                     } else return;

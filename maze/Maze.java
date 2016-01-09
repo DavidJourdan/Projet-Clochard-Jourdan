@@ -4,8 +4,6 @@ import dijkstra.Dijkstra;
 import dijkstra.GraphInterface;
 import dijkstra.PreviousInterface;
 import dijkstra.VertexInterface;
-
-import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -15,8 +13,6 @@ public class Maze implements GraphInterface {
     private ArrayList<VertexInterface> vertices = new ArrayList<VertexInterface>(); // tableau contenant les cases franchissables
     private final int height, width;
     private MBox[][] boxes;    // tableau contenant toutes les cases du labyrinthe
-    private DBox departure;
-    private ABox arrival;
 
 
     public Maze(int height, int width) {
@@ -35,7 +31,9 @@ public class Maze implements GraphInterface {
         // pour la lisibilite, l'interieur est initialise avec des cases vides
         for (int i=1 ; i < height+1 ; i++) {
             for (int j=1 ; j < width+1 ; j++) {
-                boxes[i][j] = new EBox(i,j);
+                EBox e = new EBox(i,j);
+                boxes[i][j] = e;
+                vertices.add(e);
             }
         }
     }
@@ -50,16 +48,24 @@ public class Maze implements GraphInterface {
     }
 
     public final void setBox(int x, int y, char letter){
-    	switch (letter) 
-		{
+    	switch (letter) {
 		case 'D' :
-			boxes[x][y] = new DBox(x, y); break;
+            DBox d = new DBox(x, y);
+            boxes[x][y] = d;
+            vertices.add(d);
+            break;
 		case 'A' :
-			boxes[x][y] = new ABox(x, y); break;
-		case 'W' :
-			boxes[x][y] = new WBox(x, y); break;
+            ABox a = new ABox(x, y);
+            boxes[x][y] = a;
+            vertices.add(a);
+            break;
 		case 'E' :
-			boxes[x][y] = new EBox(x, y); break; 			
+            EBox e = new EBox(x, y);
+            boxes[x][y] = e;
+            vertices.add(e);
+            break;
+		case 'W' :
+            boxes[x][y] = new WBox(x, y); break;
 		}
     }
 
@@ -136,7 +142,6 @@ public class Maze implements GraphInterface {
                             ABox a = new ABox(x,y);
                             boxes[x][y] = a;
                             vertices.add(a);
-                            arrival = a;
                             break;
                         case('E'):
                             EBox e = new EBox(x,y);
@@ -147,7 +152,6 @@ public class Maze implements GraphInterface {
                             DBox d = new DBox(x,y);
                             boxes[x][y] = d;
                             vertices.add(d);
-                            departure = d;
                             break;
                         case('W'):
                             boxes[x][y] = new WBox(x,y);
@@ -216,7 +220,18 @@ public class Maze implements GraphInterface {
     }
 
     public ArrayList<VertexInterface> solveMaze() {
-        PreviousInterface prev = Dijkstra.dijkstra(this,departure);
+        MBox arrival = null;
+        MBox departure = null;
+        // on recupere la case d'arrivee et de depart
+        for(int i=0; i<height+2; i++) {
+            for(int j=0; j<width+2; j++) {
+                if(boxes[i][j].getType().equals("A"))
+                    arrival = boxes[i][j];
+                if(boxes[i][j].getType().equals("D"))
+                    departure = boxes[i][j];
+            }
+        }
+        PreviousInterface prev = Dijkstra.dijkstra(this, departure);
         ArrayList<VertexInterface> path = prev.getShortestPathTo(arrival);
         return path;
     }
