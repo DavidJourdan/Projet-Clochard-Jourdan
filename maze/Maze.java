@@ -37,23 +37,24 @@ public class Maze implements GraphInterface {
 
     // Retourne la case aux informations demandees
     // ne renvoie le sommet que s'il est dans vertices
+     public MBox getBox(int x, int y){
         if(x>=0 && x<height+2 && y>=0 && y<width+2)
             return boxes[x][y];
         else
             return null;
     }
 
-    public void setBox(int x, int y, char letter){
+    public final void setBox(int x, int y, char letter){
     	switch (letter) 
 		{
 		case 'D' :
-			new DBox(x, y); break;
+			boxes[x][y] = new DBox(x, y); break;
 		case 'A' :
-			new ABox(x, y); break;
+			boxes[x][y] = new ABox(x, y); break;
 		case 'W' :
-			new WBox(x, y); break;
+			boxes[x][y] = new WBox(x, y); break;
 		case 'E' :
-			new EBox(x, y); break; 			
+			boxes[x][y] = new EBox(x, y); break; 			
 		}
     }
 
@@ -115,6 +116,7 @@ public class Maze implements GraphInterface {
         try {
             fin = new FileReader(fileName);
             bin = new BufferedReader(fin);
+            String str=null;
             for(int x = 1; x<height+1; x++) {
                 str = bin.readLine();
                 // Si la longueur du texte n'est pas de la meme taille que le texte, il y a une erreur.
