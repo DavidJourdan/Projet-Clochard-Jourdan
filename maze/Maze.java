@@ -10,7 +10,8 @@ import java.util.ArrayList;
 
 public class Maze implements GraphInterface {
 
-    private ArrayList<VertexInterface> vertices = new ArrayList<VertexInterface>(); // tableau contenant les cases franchissables
+    // tableau contenant les cases franchissables
+    private ArrayList<VertexInterface> vertices = new ArrayList<VertexInterface>();
     private final int height, width;
     private MBox[][] boxes;    // tableau contenant toutes les cases du labyrinthe
 
@@ -47,12 +48,15 @@ public class Maze implements GraphInterface {
             return null;
     }
 
-    public final void setBox(int x, int y, char letter){
+    public final boolean setBox(int x, int y, char letter){
+        boolean b = true;
     	switch (letter) {
+            // Lorsque la lettre rencontree est A, E, D ou W, on la met dans la case
+            // Lorsque la lettre rencontree est A, E ou D, on la met dans la liste des cases franchissables
 		case 'D' :
             DBox d = new DBox(x, y);
             boxes[x][y] = d;
-            vertices.add(d); // On a besoin d'ajouter l'objet au sommet car l'algorithme de Dijkstra en a besoin pour fonctionner
+            vertices.add(d);
             break;
 		case 'A' :
             ABox a = new ABox(x, y);
@@ -65,8 +69,12 @@ public class Maze implements GraphInterface {
             vertices.add(e);
             break;
 		case 'W' :
+            // les W ne sont pas ajoutes dans vertices
             boxes[x][y] = new WBox(x, y); break;
-		}
+        default:
+            b = false;
+		} // si le caractÃ¨re est inconnu, la methode renvoie false
+        return b;
     }
 
     public ArrayList<VertexInterface> getAllVertices() {
@@ -84,7 +92,7 @@ public class Maze implements GraphInterface {
         int y = box.getY();
 
         // un mur n'a pas de successeurs
-        if(box.getType() == "W")
+        if(box.getType().equals("W"))
             return successors; // une liste vide
 
         // On regarde chaque case voisine
@@ -97,7 +105,7 @@ public class Maze implements GraphInterface {
         MBox bottomBox = getBox(x - 1, y);
         if(bottomBox != null && !bottomBox.getType().equals("W"))
             successors.add(bottomBox);
-        // Celui a  gauche
+        // Celui aï¿½ gauche
         MBox leftBox = getBox(x, y - 1);
         if(leftBox != null && !leftBox.getType().equals("W"))
             successors.add(leftBox);
@@ -131,35 +139,15 @@ public class Maze implements GraphInterface {
             for(int x = 1; x<height+1; x++) {
                 str = bin.readLine();
                 // Si la longueur du texte n'est pas de la meme taille que le texte, il y a une erreur.
-              if(str.length()!= width)
+                if(str.length()!= width)
                     throw new MazeReadingException(fileName, x,"Invalid column length");
               
-              for(int y = 1; y<width+1; y++) {
-                    switch(str.charAt(y-1)) {
-                        // Lorsque la lettre rencontree est A, E, D ou W, on la met dans la case
-                        // Lorsque la lettre rencontree est A, E ou D, on la met dans la liste des cases franchissables
-                        case('A'):
-                            ABox a = new ABox(x,y);
-                            boxes[x][y] = a;
-                            vertices.add(a);
-                            break;
-                        case('E'):
-                            EBox e = new EBox(x,y);
-                            boxes[x][y] = e;
-                            vertices.add(e);
-                            break;
-                        case('D'):
-                            DBox d = new DBox(x,y);
-                            boxes[x][y] = d;
-                            vertices.add(d);
-                            break;
-                        case('W'):
-                            boxes[x][y] = new WBox(x,y);
-                            break; // les W ne sont pas ajoutes dans vertices
-                        // Si la lettre n'est ni E, ni A, ni D, ni W, alors il y a une erreur dans le texte.
-                        default:
-                            throw new MazeReadingException(fileName, x, String.format("Character not supported : %s", str.charAt(y)));
-                    }
+                for(int y = 1; y<width+1; y++) {
+                    char c = str.charAt(y-1);
+                    boolean b = setBox(x, y, c);
+                    // Si la lettre n'est ni E, ni A, ni D, ni W, alors il y a une erreur dans le texte.
+                    if(!b)
+                        throw new MazeReadingException(fileName, x, String.format("Character not supported : %s", c));
                 }
             }
             if(str == null)

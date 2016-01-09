@@ -13,15 +13,16 @@ import javax.swing.*;
 
 public class MazeGameController extends GameController {
 
-	
+    private final GameModel  gameModel ;
+    private Maze maze;
+    private final int height, width;
+    private int bw ;
+    private int bh ;
+
+
 	public static void main(String[] args) {
 		new MazeGameController("Labyrinthe de Kei-Saburo Clochard et David Jourdan",10,10,40,40);
 	}
-
-	private final GameModel  gameModel ;
-	
-	private Maze maze;
-    private final int height, width;
 
 
 	public MazeGameController(String name, int gameWidth, int gameHeight, int blockWidth, int blockHeight) {
@@ -35,10 +36,7 @@ public class MazeGameController extends GameController {
 		this.bw = 0 ;
 		this.bh = 0 ;
 	}
-	
-	private int bw ;
-	private int bh ;
-	
+
 	
 	public final synchronized void mouseClicked(MouseEvent e) {
 		synchronized (gameModel) {
@@ -141,7 +139,6 @@ public class MazeGameController extends GameController {
                     }
                     break;
             }
-
         } catch (IOException e1) {
             e1.printStackTrace();
         } catch (MazeReadingException e1) {
@@ -151,91 +148,91 @@ public class MazeGameController extends GameController {
 
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void mouseMoved(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void mouseWheelMoved(MouseWheelEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void focusGained(FocusEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void focusLost(FocusEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void windowActivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void windowClosed(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void windowClosing(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void windowDeactivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void windowDeiconified(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void windowIconified(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void windowOpened(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

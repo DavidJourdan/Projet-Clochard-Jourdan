@@ -20,7 +20,7 @@ public abstract class MBox implements dijkstra.VertexInterface{
         return y;
     }
 
-    public String getLabel() { // Renvoie les coordonees de la case
+    public String getLabel() { // Renvoie les coordonnees de la case
         return "(" + x + "," + y + ")";
     }
 

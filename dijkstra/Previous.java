@@ -20,11 +20,11 @@ public class Previous implements PreviousInterface {
     }
 
     /** Liste pour montrer le chemin le plus court
-     la racine et un sommet */
+     entre la racine et un sommet */
     public ArrayList<VertexInterface> getShortestPathTo(VertexInterface vertex) {
         ArrayList<VertexInterface> path = new ArrayList<VertexInterface>();
         while (vertex != null){ // quand la branche existe
-            path.add(vertex); // on ajoute le sommet correspondant a  la liste
+            path.add(vertex); // on ajoute le sommet correspondant aï¿½ la liste
             vertex = getValue(vertex);
         }
         return path;
