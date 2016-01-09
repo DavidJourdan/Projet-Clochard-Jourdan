@@ -21,11 +21,13 @@ public class MazeGameController extends GameController {
 	
 	private Maze maze ;
 	private int mazeNb = 1;
+    private final int height, width;
 
-	private int mazeNb = 1;
 
 	public MazeGameController(String name, int gameWidth, int gameHeight, int blockWidth, int blockHeight) {
 		super(name,gameWidth+2,gameHeight+2,blockWidth,blockHeight) ;
+        height = gameHeight;
+        width = gameWidth;
 		this.gameModel = new GameModel(gameWidth+2,gameHeight+2,blockWidth,blockHeight) ;
 		maze = new Maze(gameHeight, gameWidth);
 		for (int i=0;i<gameHeight+2;i++){
@@ -71,22 +73,22 @@ public class MazeGameController extends GameController {
 				switch (gameModel.get(bw, bh)) {
 				case ((byte)0) :				// Quand on clique sur une case vide, elle devient une case depart
 					c=(byte)2;
-				maze.setBox(bh, bw, 'D');
-				gameModel.set(bw, bh, c);
-				notify(gameModel);
-				break;
+                    maze.setBox(bh, bw, 'D');
+                    gameModel.set(bw, bh, c);
+                    notify(gameModel);
+                    break;
 				case ((byte)2) :				// Quand on clique sur une case depart, elle devient une case arrivee
 					maze.setBox(bh, bw, 'A');
-				c=(byte)10;
-				gameModel.set(bw, bh, c);
-				notify(gameModel);
-				break;
+                    c=(byte)10;
+                    gameModel.set(bw, bh, c);
+                    notify(gameModel);
+                    break;
 				case ((byte)10) :				// Quand on clique sur une case arrivee, elle devient une case vide
-					maze.setBox(bh, bw, 'E');
-				c=(byte)0;
-				gameModel.set(bw, bh, c);
-				notify(gameModel);
-				break;
+                    maze.setBox(bh, bw, 'E');
+                    c=(byte)0;
+                    gameModel.set(bw, bh, c);
+                    notify(gameModel);
+                    break;
 				}
 			}
 			
@@ -109,6 +111,36 @@ public class MazeGameController extends GameController {
 		}
 
 	}
+
+    private void updateAll() {
+        for(int i=0; i<height; i++) {
+            for(int j=0; j<width; j++) {
+                char type = maze.getBox(i,j).getType().charAt(0);
+                switch(type) {
+                    case 'A':
+                        byte c=(byte)10;
+                        gameModel.set(j, i, c);
+                        notify(gameModel);
+                        break;
+                    case 'D':
+                        c=(byte)2;
+                        gameModel.set(j, i, c);
+                        notify(gameModel);
+                        break;
+                    case 'E':
+                        c=(byte)0;
+                        gameModel.set(j, i, c);
+                        notify(gameModel);
+                        break;
+                    case 'W':
+                        c=(byte)4;
+                        gameModel.set(j, i, c);
+                        notify(gameModel);
+                        break;
+                }
+            }
+        }
+    }
 
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
@@ -153,7 +185,7 @@ public class MazeGameController extends GameController {
                     JFileChooser fileChooser = new JFileChooser();
                     if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                         File file = fileChooser.getSelectedFile();
-                        fileName = file.getName();
+                        fileName = file.getAbsolutePath();
                     }
                     // sauvegarde dans tous les cas (au pire avec un nom choisi automatiquement)
                     maze.saveToTextFile(fileName);
@@ -162,8 +194,9 @@ public class MazeGameController extends GameController {
                     fileChooser = new JFileChooser();
                     if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                         File file = fileChooser.getSelectedFile();
-                        fileName = file.getName();
+                        fileName = file.getAbsolutePath();
                         maze.initFromTextFile(fileName);
+                        updateAll();
                     } else return;
                     break;
                 case('r'):
@@ -174,6 +207,7 @@ public class MazeGameController extends GameController {
                         int y = box.getY();
                         if(!box.getType().equals("A") && !box.getType().equals("D")) {
                             gameModel.set(y, x, (byte) 12);
+                            notify(gameModel);
                         }
                     }
                     break;
