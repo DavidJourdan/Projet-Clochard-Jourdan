@@ -3,6 +3,8 @@ package MainProgram;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import maze.*;
 import interfaces.*;
 import dijkstra.*;
@@ -18,10 +20,10 @@ public class MazeGameController extends GameController {
 	private final GameModel  gameModel ;
 	
 	private Maze maze ;
+	private int mazeNb = 1;
 
 
 	public MazeGameController(String name, int gameWidth, int gameHeight, int blockWidth, int blockHeight) {
-	{
 		super(name,gameWidth+2,gameHeight+2,blockWidth,blockHeight) ;
 		this.gameModel = new GameModel(gameWidth+2,gameHeight+2,blockWidth,blockHeight) ;
 		maze = new Maze(gameHeight, gameWidth);
@@ -164,6 +166,15 @@ public class MazeGameController extends GameController {
                     } else return;
                     break;
                 case('r'):
+                    ArrayList<VertexInterface> path = maze.solveMaze();
+                    for(VertexInterface vertex : path) {
+                        MBox box = (MBox) vertex;
+                        int x = box.getX();
+                        int y = box.getY();
+                        if(!box.getType().equals("A") && !box.getType().equals("D")) {
+                            gameModel.set(y, x, (byte) 12);
+                        }
+                    }
                     break;
             }
 

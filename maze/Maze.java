@@ -1,6 +1,8 @@
 package maze;
 
+import dijkstra.Dijkstra;
 import dijkstra.GraphInterface;
+import dijkstra.PreviousInterface;
 import dijkstra.VertexInterface;
 
 import javax.swing.*;
@@ -9,9 +11,12 @@ import java.util.ArrayList;
 
 
 public class Maze implements GraphInterface {
+
     private ArrayList<VertexInterface> vertices = new ArrayList<VertexInterface>(); // tableau contenant les cases franchissables
     private final int height, width;
     private MBox[][] boxes;    // tableau contenant toutes les cases du labyrinthe
+    private DBox departure;
+    private ABox arrival;
 
 
     public Maze(int height, int width) {
@@ -35,6 +40,7 @@ public class Maze implements GraphInterface {
         }
     }
 
+    public MBox getBox(int x, int y) {
     // Retourne la case aux informations demandees
     // ne renvoie le sommet que s'il est dans vertices
         if(x>=0 && x<height+2 && y>=0 && y<width+2)
@@ -115,6 +121,7 @@ public class Maze implements GraphInterface {
         try {
             fin = new FileReader(fileName);
             bin = new BufferedReader(fin);
+            String str = null;
             for(int x = 1; x<height+1; x++) {
                 str = bin.readLine();
                 // Si la longueur du texte n'est pas de la meme taille que le texte, il y a une erreur.
@@ -129,6 +136,7 @@ public class Maze implements GraphInterface {
                             ABox a = new ABox(x,y);
                             boxes[x][y] = a;
                             vertices.add(a);
+                            arrival = a;
                             break;
                         case('E'):
                             EBox e = new EBox(x,y);
@@ -139,6 +147,7 @@ public class Maze implements GraphInterface {
                             DBox d = new DBox(x,y);
                             boxes[x][y] = d;
                             vertices.add(d);
+                            departure = d;
                             break;
                         case('W'):
                             boxes[x][y] = new WBox(x,y);
@@ -204,5 +213,11 @@ public class Maze implements GraphInterface {
             if (bw != null)
                 try { bw.close(); } catch (Exception e) {}
         }
+    }
+
+    public ArrayList<VertexInterface> solveMaze() {
+        PreviousInterface prev = Dijkstra.dijkstra(this,departure);
+        ArrayList<VertexInterface> path = prev.getShortestPathTo(arrival);
+        return path;
     }
 }
