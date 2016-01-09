@@ -22,6 +22,7 @@ public class MazeGameController extends GameController {
 	private Maze maze ;
 	private int mazeNb = 1;
 
+	private int mazeNb = 1;
 
 	public MazeGameController(String name, int gameWidth, int gameHeight, int blockWidth, int blockHeight) {
 		super(name,gameWidth+2,gameHeight+2,blockWidth,blockHeight) ;
