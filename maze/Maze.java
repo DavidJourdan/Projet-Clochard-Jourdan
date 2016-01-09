@@ -40,10 +40,9 @@ public class Maze implements GraphInterface {
         }
     }
 
-    public MBox getBox(int x, int y) {
+    public final MBox getBox(int x, int y) {
     // Retourne la case aux informations demandees
     // ne renvoie le sommet que s'il est dans vertices
-     public MBox getBox(int x, int y){
         if(x>=0 && x<height+2 && y>=0 && y<width+2)
             return boxes[x][y];
         else

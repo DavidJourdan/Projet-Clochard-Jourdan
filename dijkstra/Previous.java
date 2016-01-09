@@ -24,7 +24,7 @@ public class Previous implements PreviousInterface {
     public ArrayList<VertexInterface> getShortestPathTo(VertexInterface vertex) {
         ArrayList<VertexInterface> path = new ArrayList<VertexInterface>();
         while (vertex != null){ // quand la branche existe
-            path.add(vertex); // on l'ajoute Ã  la liste
+            path.add(vertex); // on ajoute le sommet correspondant a  la liste
             vertex = getValue(vertex);
         }
         return path;

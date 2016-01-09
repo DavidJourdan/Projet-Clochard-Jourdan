@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import maze.*;
 import interfaces.*;
 import dijkstra.*;
+
 import javax.swing.*;
 
 public class MazeGameController extends GameController {
@@ -113,8 +114,8 @@ public class MazeGameController extends GameController {
 	}
 
     private void updateAll() {
-        for(int i=0; i<height; i++) {
-            for(int j=0; j<width; j++) {
+        for(int i=0; i<height+2; i++) {
+            for(int j=0; j<width+2; j++) {
                 char type = maze.getBox(i,j).getType().charAt(0);
                 switch(type) {
                     case 'A':
@@ -141,41 +142,6 @@ public class MazeGameController extends GameController {
             }
         }
     }
-
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void mouseMoved(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void mouseWheelMoved(MouseWheelEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
 
 	public void keyPressed(KeyEvent e) {
         try {
@@ -220,59 +186,93 @@ public class MazeGameController extends GameController {
         }
     }
 
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseDragged(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseMoved(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseWheelMoved(MouseWheelEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void focusGained(FocusEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void focusLost(FocusEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void windowActivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void windowClosed(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void windowClosing(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void windowDeactivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void windowDeiconified(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void windowIconified(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void windowOpened(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
-
 }
