@@ -52,7 +52,7 @@ public class Maze implements GraphInterface {
 		case 'D' :
             DBox d = new DBox(x, y);
             boxes[x][y] = d;
-            vertices.add(d);
+            vertices.add(d); // On a besoin d'ajouter l'objet au sommet car l'algorithme de Dijkstra en a besoin pour fonctionner
             break;
 		case 'A' :
             ABox a = new ABox(x, y);
@@ -97,7 +97,7 @@ public class Maze implements GraphInterface {
         MBox bottomBox = getBox(x - 1, y);
         if(bottomBox != null && !bottomBox.getType().equals("W"))
             successors.add(bottomBox);
-        // Celui Ã  gauche
+        // Celui a  gauche
         MBox leftBox = getBox(x, y - 1);
         if(leftBox != null && !leftBox.getType().equals("W"))
             successors.add(leftBox);

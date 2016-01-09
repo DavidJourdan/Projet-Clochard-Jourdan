@@ -1,6 +1,6 @@
 package dijkstra;
 
 public interface VertexInterface {
-    // Retourne l'étiquette d'un sommet
+    // Retourne l'etiquette d'un sommet
     String getLabel();
 }

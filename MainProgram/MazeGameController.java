@@ -25,7 +25,7 @@ public class MazeGameController extends GameController {
 
 
 	public MazeGameController(String name, int gameWidth, int gameHeight, int blockWidth, int blockHeight) {
-		super(name,gameWidth+2,gameHeight+2,blockWidth,blockHeight) ;
+		super(name,gameWidth+2,gameHeight+2,blockWidth,blockHeight) ; // On decale les indices pour creer le contour du cadre
         height = gameHeight;
         width = gameWidth;
 		this.gameModel = new GameModel(gameWidth+2,gameHeight+2,blockWidth,blockHeight) ;
@@ -87,7 +87,7 @@ public class MazeGameController extends GameController {
 		}
 	}
 
-    private void updateAll() {
+    private void updateAll() { // Affectation de chaque case a une couleur comme explicite dans le programme precedent
         for(int i=0; i<height+2; i++) {
             for(int j=0; j<width+2; j++) {
                 char type = maze.getBox(i,j).getType().charAt(0);
@@ -111,7 +111,7 @@ public class MazeGameController extends GameController {
 	public void keyPressed(KeyEvent e) {
         try {
             switch(e.getKeyChar()) {
-                case('s'):
+                case('s'):											// Sauvegarde du fichier
                     JFileChooser fileChooser = new JFileChooser();
                     if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                         File file = fileChooser.getSelectedFile();
@@ -119,7 +119,7 @@ public class MazeGameController extends GameController {
                         maze.saveToTextFile(fileName);
                     }
                     break;
-                case('o'):
+                case('o'):											// Ouverture du fichier
                     fileChooser = new JFileChooser();
                     if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                         File file = fileChooser.getSelectedFile();
@@ -128,7 +128,7 @@ public class MazeGameController extends GameController {
                         updateAll();
                     } else return;
                     break;
-                case('r'):
+                case('r'):											// Resolution du plus court chemin du labyrinthe
                     ArrayList<VertexInterface> path = maze.solveMaze();
                     for(VertexInterface vertex : path) {
                         MBox box = (MBox) vertex;
